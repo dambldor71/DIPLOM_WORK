@@ -51,123 +51,104 @@
 
     <!-- Begin Main Header Area -->
     <header class="main-header-area">
-        <div class="header-top border-bottom d-none d-lg-block">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <div class="header-top-left">
-                            <ul class="dropdown-wrap text-matterhorn">
-                                <li class="dropdown">
-                                    <button class="btn btn-link dropdown-toggle ht-btn" type="button" id="languageButton" data-bs-toggle="dropdown" aria-label="language" aria-expanded="false">
-                                        Русский
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="languageButton">
-                                        <li><a class="dropdown-item" href="#">Русский</a></li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown">
-                                    <button class="btn btn-link dropdown-toggle ht-btn" type="button" id="currencyButton" data-bs-toggle="dropdown" aria-label="currency" aria-expanded="false">
-                                        RUB
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="currencyButton">
-                                        <li><a class="dropdown-item" href="#">RUB</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="header-middle header-sticky py-6 py-lg-0">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-12">
                         <div class="header-middle-wrap position-relative">
-
                             <a href="{{route('mainpage')}}" class="header-logo">
                                 <img src="{{ asset('myPublic/assets/images/logo/smile.png')}}" alt="Header Logo">
                             </a>
 
-                            <div class="main-menu d-none d-lg-block">
-                                <nav class="main-nav">
-                                    <ul>
-                                        <li class="megamenu-holder">
-                                            <a href="">Личный кабинет
-                                            </a>
-                                        </li>
-                                        <li class="megamenu-holder">
-                                            <a href="{{route('search')}}">Поиск тендеров
-                                                <i class="pe-7s-angle-down"></i>
-                                            </a>
-                                            <ul class="drop-menu megamenu">
-                                                <li>
-                                                    <span class="title">Длина</span>
-                                                    <ul>
-                                                        <li>
-                                                            <a href="">Длина 6</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="">Длина 11.7</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="">Длина 11.75</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="">Диаметр 12</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="">Бухта</a>
-                                                        </li>
+                            @if (Route::has('login'))
+                                @auth
+                                    <div class="main-menu d-none d-lg-block">
+                                        <nav class="main-nav">
+                                            <ul>
+                                                <li class="megamenu-holder">
+                                                    <a href="">Личный кабинет
+                                                    </a>
+                                                </li>
+                                                <li class="megamenu-holder">
+                                                    <a href="{{route('search')}}">Поиск тендеров
+                                                        <i class="pe-7s-angle-down"></i>
+                                                    </a>
+                                                    <ul class="drop-menu megamenu">
+                                                        @foreach($categories as $category)
+                                                            @php
+                                                                $num = 1
+                                                            @endphp
+                                                            <li>
+                                                                <span class="title">{{$category['name']}}</span>
+                                                                <ul>
+                                                                    @foreach($filters as $value)
+                                                                        @if($value['cid'] === $category['cid'])
+                                                                            @if($num < 6)
+                                                                                <li>
+                                                                                    <a href="http://{{$_SERVER['HTTP_HOST']}}/search?{{$value['fid']}}={{$category['cid']}}-{{$value['fid']}}">{{$value['name']}}</a>
+                                                                                </li>
+                                                                                @php
+                                                                                    $num += 1
+                                                                                @endphp
+                                                                            @endif
+                                                                        @endif
+                                                                    @endforeach
+                                                                </ul>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </li>
+                                                <li class="megamenu-holder">
+                                                    <a href="">Избранное
+                                                        <i class="pe-7s-angle-down"></i>
+                                                    </a>
+                                                    <ul class="drop-menu megamenu">
+                                                    </ul>
+                                                </li>
+                                                <li class="megamenu-holder">
+                                                    <a href="">Помощь
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                @else
+                                    <div class="main-menu d-none d-lg-block">
+                                    </div>
+                                @endauth
+                            @endif
+                            <div class="header-right">
+                                @if (Route::has('login'))
+                                    <nav class="-mx-3 flex flex-1 justify-end">
+                                        @auth
+                                            <ul>
+                                                <li class="dropdown d-none d-lg-block">
+                                                    <button class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                        {{ Auth::user()->name }}
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingButton">
+                                                        <x-dropdown-link :href="route('profile.edit')">
+                                                            {{ __('Смена данных') }}
+                                                        </x-dropdown-link>
+                                                        <x-dropdown-link :href="route('logout')">
+                                                            {{ __('Выйти') }}
+                                                        </x-dropdown-link>
                                                     </ul>
                                                 </li>
                                             </ul>
-                                        </li>
-                                        <li class="megamenu-holder">
-                                            <a href="">Избранное
-                                                <i class="pe-7s-angle-down"></i>
+                                        @else
+                                            <a href="{{ route('login') }}" class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
+                                                Войти
                                             </a>
-                                            <ul class="drop-menu megamenu">
-                                            </ul>
-                                        </li>
-                                        <li class="megamenu-holder">
-                                            <a href="">Помощь
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                            <div class="header-right">
-                                <ul>
-                                    <li class="dropdown d-none d-lg-block">
-                                        <button class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
-                                            {{ Auth::user()->name }}<i class="pe-7s-user"></i>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingButton">
-                                            <x-dropdown-link :href="route('profile.edit')">
-                                                {{ __('Смена данных') }}
-                                            </x-dropdown-link>
-                                            <x-dropdown-link :href="route('logout')">
-                                                {{ __('Выйти') }}
-                                            </x-dropdown-link>
-{{--                                            <form method="POST" action="{{ route('logout') }}">--}}
-{{--                                                @csrf--}}
 
-{{--                                                <x-responsive-nav-link :href="route('logout')"--}}
-{{--                                                                       onclick="event.preventDefault();--}}
-{{--                                                    this.closest('form').submit();">--}}
-{{--                                                    {{ __('Log Out') }}--}}
-{{--                                                </x-responsive-nav-link>--}}
-{{--                                            </form>--}}
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <a href="#exampleModal" class="search-btn bt" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                            <i class="pe-7s-search"></i>
-                                        </a>
-                                    </li>
-
-                                </ul>
+                                            @if (Route::has('register'))
+                                                <a href="{{ route('register') }}" class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
+                                                    Зарегистрироваться
+                                                </a>
+                                            @endif
+                                        @endauth
+                                    </nav>
+                                @endif
                             </div>
                         </div>
                     </div>

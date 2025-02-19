@@ -1,7 +1,7 @@
 @extends('header')
 
 @section('content')
-    <div class="breadcrumb-area breadcrumb-height" data-bg-image="{{ asset('myPublic/assets/images/background-img/1920400.png')}}">
+    <div class="breadcrumb-area breadcrumb-height" data-bg-image="{{asset('myPublic/assets/images/background-img/1920400.png')}}">
         <div class="container h-100">
             <div class="row h-100">
                 <div class="col-lg-12">
@@ -17,26 +17,22 @@
             </div>
         </div>
     </div>
+{{--    @dd($oneTenderInfo)--}}
     <div class="single-product-area section-space-top-100">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 pt-9 pt-lg-0">
                     <div class="single-product-content">
-                        <h2 class="title mb-3">ТЕНДЕР {{$oneTenderInfo['code']}}</h2>
+                        <h2 class="title mb-3">ТЕНДЕР {{$oneTenderInfo['tender_code']}}</h2>
                         <div class="price-box pb-3">
-                            <span class="new-price text-danger">{{$oneTenderInfo['price']}}</span>
+                            <span class="new-price text-danger">{{$oneTenderInfo['price']}} ₽</span>
                         </div>
-                        <p class="short-desc mb-3">ОПИСАНИЕ ТЕНДЕРА</p>
-{{--                        <ul class="quantity-with-btn pb-7">--}}
-{{--                            <li class="affiliate-btn-wrap">--}}
-{{--                                <a class="btn btn-custom-size lg-size btn-primary" href="#">Buy Now</a>--}}
-{{--                            </li>--}}
-{{--                        </ul>--}}
+                        <p class="short-desc mb-3">{{$oneTenderInfo['description']}}</p>
                         <div class="product-category pb-3">
                             <span class="title">Организация, осуществляющая размещение:</span>
                             <ul>
                                 <li>
-                                    {{$oneTenderInfo['author']}}
+                                    {{$oneTenderInfo['customer']}}
                                 </li>
                             </ul>
                         </div>
@@ -44,7 +40,7 @@
                             <span class="title">Размещено:</span>
                             <ul>
                                 <li>
-                                    <a href="#">{{$oneTenderInfo['dates'][0]}}</a>
+                                    <a href="#">{{$oneTenderInfo['start_date']}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -52,7 +48,7 @@
                             <span class="title">Окончание подачи заявок:</span>
                             <ul>
                                 <li>
-                                    <a href="#">{{$oneTenderInfo['dates'][2]}}</a>
+                                    <a href="#">{{$oneTenderInfo['end_date']}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -60,7 +56,7 @@
                             <span class="title">Последнее обновление данных:</span>
                             <ul>
                                 <li>
-                                    <a href="#">{{$oneTenderInfo['dates'][1]}}</a>
+                                    <a href="#">{{$oneTenderInfo['update_date']}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -88,15 +84,20 @@
                     <div class="tab-content product-tab-content">
                         <div class="tab-pane fade" id="information" role="tabpanel" aria-labelledby="information-tab">
                             <div class="product-information-body">
+                                <h4 class="title">Описание тендера</h4>
+                                <p class="short-desc mb-4">{{$oneTenderInfo['description']}}</p>
+                                <h4 class="title">Закон</h4>
+                                <p class="short-desc mb-4">{{$usedFilters[0]}}</p>
                                 <h4 class="title">Способ определения поставщика (подрядчика, исполнителя)</h4>
-
-                                <p class="short-desc mb-4">{{$oneTenderInfo['lawType'][1]}}</p>
+                                <p class="short-desc mb-4">{{$usedFilters[2]}}</p>
                                 <h4 class="title">Адрес электронной площадки в информационно-телекоммуникационной сети «Интернет»</h4>
-                                <a class="short-desc mb-4" href="{{$oneTenderInfo['placeName']}}">{{$oneTenderInfo['placeName']}}</a>
+                                <a class="short-desc mb-4" href="{{$oneTenderInfo['source_link']}}">{{$oneTenderInfo['source_link']}}</a>
                                 <h4 class="title">Заказчик</h4>
-                                <a class="short-desc mb-4" href="{{$oneTenderInfo['authorLink']}}">{{$oneTenderInfo['author']}}</a>
+                                <a class="short-desc mb-4" href="{{$oneTenderInfo['customer']}}">{{$oneTenderInfo['customer']}}</a>
                                 <h4 class="title">Этап закупки</h4>
-                                <p class="short-desc mb-0">{{$oneTenderInfo['status']}}</p>
+                                <p class="short-desc mb-0">{{$usedFilters[1]}}</p>
+                                <h4 class="title">Ссылка на тендер на zakupki.gov</h4>
+                                <a class="short-desc mb-0" href="{{$oneTenderInfo['link']}}">Кликните, чтобы перейти</a>
                             </div>
                         </div>
                         <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
@@ -185,198 +186,5 @@
             </div>
         </div>
     </div>
-    <div class="background-img" data-bg-image="assets/images/background-img/1-2-1920x716.jpg">
-        <div class="product-area product-arrow section-space-y-axis-100">
-            <div class="container">
-                <div class="section-title pb-55">
-                    <h2 class="title mb-0">Related Products</h2>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="swiper-container product-slider">
-                            <div class="swiper-wrapper text-heading">
-                                <div class="swiper-slide">
-                                    <div class="product-item">
-                                        <div class="product-img img-zoom-effect">
-                                            <a href="shop.html">
-                                                <img class="img-full" src="assets/images/product/medium-size/product-slider/1-1-290x350.jpg" alt="Product Images">
-                                            </a>
-                                        </div>
-                                        <div class="product-content">
-                                            <a class="product-name pb-1" href="shop.html">Auto Clutch & Brake</a>
-                                            <div class="price-box">
-                                                <div class="price-box-holder">
-                                                    <span>Price:</span>
-                                                    <span class="new-price text-primary">$120.00</span>
-                                                </div>
-                                            </div>
-                                            <div class="product-add-action">
-                                                <ul>
-                                                    <li>
-                                                        <a href="cart.html" data-tippy="Add to cart" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-cart"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="quuickview-btn" data-bs-toggle="modal" data-bs-target="#quickModal">
-                                                        <a href="#" data-tippy="Quickview" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-look"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="wishlist.html" data-tippy="Add to wishlist" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-like"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="compare.html" data-tippy="Add to compare" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-shuffle"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="product-item">
-                                        <div class="product-img img-zoom-effect">
-                                            <a href="shop.html">
-                                                <img class="img-full" src="assets/images/product/medium-size/product-slider/1-2-290x350.jpg" alt="Product Images">
-                                            </a>
-                                        </div>
-                                        <div class="product-content">
-                                            <a class="product-name pb-1" href="shop.html">Fuel Injector</a>
-                                            <div class="price-box">
-                                                <div class="price-box-holder">
-                                                    <span>Price:</span>
-                                                    <span class="new-price text-primary">$130.00</span>
-                                                </div>
-                                            </div>
-                                            <div class="product-add-action">
-                                                <ul>
-                                                    <li>
-                                                        <a href="cart.html" data-tippy="Add to cart" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-cart"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="quuickview-btn" data-bs-toggle="modal" data-bs-target="#quickModal">
-                                                        <a href="#" data-tippy="Quickview" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-look"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="wishlist.html" data-tippy="Add to wishlist" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-like"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="compare.html" data-tippy="Add to compare" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-shuffle"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="product-item">
-                                        <div class="product-img img-zoom-effect">
-                                            <a href="shop.html">
-                                                <img class="img-full" src="assets/images/product/medium-size/product-slider/1-3-290x350.jpg" alt="Product Images">
-                                            </a>
-                                        </div>
-                                        <div class="product-content">
-                                            <a class="product-name pb-1" href="shop.html">A/C Compressor</a>
-                                            <div class="price-box">
-                                                <div class="price-box-holder">
-                                                    <span>Price:</span>
-                                                    <span class="new-price text-primary">$150.00</span>
-                                                </div>
-                                            </div>
-                                            <div class="product-add-action">
-                                                <ul>
-                                                    <li>
-                                                        <a href="cart.html" data-tippy="Add to cart" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-cart"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="quuickview-btn" data-bs-toggle="modal" data-bs-target="#quickModal">
-                                                        <a href="#" data-tippy="Quickview" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-look"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="wishlist.html" data-tippy="Add to wishlist" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-like"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="compare.html" data-tippy="Add to compare" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-shuffle"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="product-item">
-                                        <div class="product-img img-zoom-effect">
-                                            <a href="shop.html">
-                                                <img class="img-full" src="assets/images/product/medium-size/product-slider/1-4-290x350.jpg" alt="Product Images">
-                                            </a>
-                                        </div>
-                                        <div class="product-content">
-                                            <a class="product-name pb-1" href="shop.html">Shock Absorbers</a>
-                                            <div class="price-box">
-                                                <div class="price-box-holder">
-                                                    <span>Price:</span>
-                                                    <span class="new-price text-primary">$180.00</span>
-                                                </div>
-                                            </div>
-                                            <div class="product-add-action">
-                                                <ul>
-                                                    <li>
-                                                        <a href="cart.html" data-tippy="Add to cart" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-cart"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="quuickview-btn" data-bs-toggle="modal" data-bs-target="#quickModal">
-                                                        <a href="#" data-tippy="Quickview" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-look"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="wishlist.html" data-tippy="Add to wishlist" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-like"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="compare.html" data-tippy="Add to compare" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-shuffle"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Add Arrows -->
-                        <div class="product-button-wrap pt-10">
-                            <div class="product-button-prev">
-                                <i class="pe-7s-angle-left"></i>
-                            </div>
-                            <div class="product-button-next">
-                                <i class="pe-7s-angle-right"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 @endsection

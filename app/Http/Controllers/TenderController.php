@@ -12,7 +12,7 @@ class TenderController extends Controller
 {
     public function index(SearchTenderService $service, $id)
     {
-        return $service->showTenderInformation($id);
+        return $service->showOne($id);
     }
 //        dd($id);
 //        function parser($urlPage): bool|string

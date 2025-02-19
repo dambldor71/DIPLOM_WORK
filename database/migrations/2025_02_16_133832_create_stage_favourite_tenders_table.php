@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tender_filters', function (Blueprint $table) {
+        Schema::create('work_stage_tenders', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('description')->nullable();
-            $table->string('code');
-            $table->foreignId('category_id')->constrained('category_filters');
+            $table->foreignId('favourite_id')->constrained('favourite_tenders');
+            $table->foreignId('stage_id')->constrained('work_stage');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tender_filters');
+        Schema::dropIfExists('stage_favourite_tenders');
     }
 };

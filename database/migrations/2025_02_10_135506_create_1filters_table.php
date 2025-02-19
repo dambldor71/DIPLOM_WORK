@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('category_filters', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+        Schema::create('filters', function (Blueprint $table) {
+            $table->id('fid');
+            $table->text('name')->unique();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('category_filters');
+        Schema::dropIfExists('tender_filters');
     }
 };

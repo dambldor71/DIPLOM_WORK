@@ -1,101 +1,107 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Services\Search;
 
-use Illuminate\Console\Application;
-use phpQuery;
-use function App\Http\Controllers\parser;
+use App\Models\Category;
+use App\Models\Filter;
+use App\Models\Tender;
+use Illuminate\Database\Eloquent\Builder;
 
 class SearchTenderService
 {
-    public function showTenderInformation($id)
+    public function showOne($id)
     {
-        require __DIR__ . '/phpQuery-onefile.php';
+        $categories = Category::query()->get()->toArray();
 
-        if (str_contains($id, 'notice')) {
-            $url = 'https://zakupki.gov.ru/epz/order/notice/notice223/common-info.html?' . $id;
+        $filters = $this->selectFilter()->get()->toArray();
+
+        $oneTenderInfo = Tender::select('id', 'tender_code', 'price', 'link', 'description',
+            'customer', 'law', 'purchase_stage', 'type_of_select', 'start_date', 'update_date', 'end_date', 'source_link')->where('id', $id)->get()->toArray()[0];
+
+        $usedFilters = $this->selectFilter()
+            ->whereIn('fid', [$oneTenderInfo['law'], $oneTenderInfo['purchase_stage'], $oneTenderInfo['type_of_select']])
+            ->pluck('name')->toArray();
+
+        return view('search.tender', compact('oneTenderInfo', 'usedFilters', 'categories', 'filters'));
+    }
+
+    public function showAll($searchBox)
+    {
+        $tenderInfo = Tender::select('id', 'tender_code', 'price', 'link', 'description',
+            'customer', 'start_date', 'update_date', 'end_date', 'source_link');
+
+        if (!empty($searchBox)) {
+            $lawArr = [];
+            $stageArr = [];
+            $typeArr = [];
+            foreach ($searchBox as $key => $searchElement) {
+                if ($key === 'searchString' || $key === 'page') {
+                    continue;
+                }
+
+                $elemArr = explode('-', $searchElement);
+
+                if ($elemArr[0] === '1') {
+                    $lawArr[] = $elemArr[1];
+                } elseif ($elemArr[0] === '2') {
+                    $stageArr[] = $elemArr[1];
+                } else {
+                    $typeArr[] = $elemArr[1];
+                }
+            }
+
+            if (!empty($lawArr)) {
+                $tenderInfo = $tenderInfo->whereIn('law', $lawArr);
+            }
+            if (!empty($stageArr)) {
+                $tenderInfo = $tenderInfo->whereIn('purchase_stage', $stageArr);
+            }
+            if (!empty($typeArr)) {
+                $tenderInfo = $tenderInfo->whereIn('type_of_select', $typeArr);
+            }
+        }
+
+        $links = 0;
+        $allTendersNum = $this->setRightDeclension($tenderInfo->count());
+
+        if (count($tenderInfo->get()) > 10) {
+            $links += 1;
+            $tenderInfo = $tenderInfo->paginate(10)->withQueryString();
         } else {
-            $url = 'https://zakupki.gov.ru/epz/order/notice/ea20/view/common-info.html?' . $id;
+            $tenderInfo = $tenderInfo->get();
         }
-//        https://zakupki.gov.ru  /epz/order/notice/ezt20/view/common-info.html?regNumber=0316300001625000003
-//        https://zakupki.gov.ru  /epz/order/notice/zk20/view/common-info.html?regNumber=0361300002125000006
-        $file = $this->parser($url);
-        $pq = phpQuery::newDocument($file);
+        $categories = Category::query()->get()->toArray();
 
-        $oneTenderInfo = [
-            'lawType' => explode(' ', preg_replace('/\s+/', ' ',
-                trim(str_replace("\n", "", $pq->find('.text-truncate')->text() ?: $pq->find('.registry-entry__header-top__title')->text())))),
-            'code' => $pq->find('.cardMainInfo__status .distancedText a')->text() ?: trim($pq->find('.registry-entry__header-mid__number a')->text()),
-            'price' => trim($pq->find('.price .cost')->text()) ?: trim($pq->find('.price-block__value')->text()),
-            'author' => $pq->find('.sectionMainInfo__body .cardMainInfo__section .cardMainInfo__content a')->text() ?: trim($pq->find('.registry-entry__body-value a')->text()),
-            'authorLink' => $pq->find('.sectionMainInfo__body .cardMainInfo__section .cardMainInfo__content a')->attr('href') ?: trim($pq->find('.registry-entry__body-value a')->attr('href')),
-            'status' => trim($pq->find('.cardMainInfo__status .cardMainInfo__state')->text() ?: $pq->find('.registry-entry__header-mid__title')->text()),
-            'dates' => explode(' ', preg_replace('/\s+/', ' ',
-                trim(str_replace("\n", "", $pq->find('.date .cardMainInfo__content')->text() ?: $pq->find('.data-block__value')->text())))),
-            'placeName' =>  explode(' ', preg_replace('/\s+/', ' ',
-                trim(str_replace("\n", "", $pq->find('.section__info a')->text() ?: $pq->find('.common-text__value a')->text()))))[0],
-        ];
+        $filters = $this->selectFilter()->get()->toArray();
 
-//        dd($oneTenderInfo);
-
-        return view('search.tender', compact('oneTenderInfo'));
-    }
-    public function searchAllTenders()
-    {
-        $url = 'https://zakupki.gov.ru/epz/order/extendedsearch/results.html';
-        require __DIR__ . '/phpQuery-onefile.php';
-
-        $file = $this->parser($url);
-
-        $pq = phpQuery::newDocument($file);
-
-        $title = $pq->find('.registry-entry__header-mid__number a');
-        $data = array();
-
-        foreach ($title as $oneTitle) {
-            $elem = pq($oneTitle);
-            $data[] = [$elem->attr('href'), explode('?', $elem->attr('href'))[1]];
-        }
-
-        $tenderInfo = array();
-        $tenderPath = 'https://zakupki.gov.ru';
-
-        foreach ($data as $one) {
-            $tenderUrl = $tenderPath . $one[0];
-            $tenderPage = $this->parser($tenderUrl);
-            $tenderPq = phpQuery::newDocument($tenderPage);
-
-//            var_dump($tenderPq . "\n");
-//            var_dump($tenderPq->find('.cardMainInfo__status .distancedText')->text() ?: trim($tenderPq->find('.registry-entry__header-mid__number')->text()));
-
-            $oneTenderInfo = [
-                'link' => $one[0],
-                'request' => $one[1],
-                'code' => $tenderPq->find('.cardMainInfo__status .distancedText a')->text() ?: trim($tenderPq->find('.registry-entry__header-mid__number a')->text()),
-                'price' => trim($tenderPq->find('.price .cost')->text()) ?: trim($tenderPq->find('.price-block__value')->text()),
-                'author' => $tenderPq->find('.sectionMainInfo__body .cardMainInfo__section .cardMainInfo__content a')->text() ?: trim($tenderPq->find('.registry-entry__body-value a')->text()),
-                'status' => trim($tenderPq->find('.cardMainInfo__status .cardMainInfo__state')->text()) ?: trim($tenderPq->find('.registry-entry__header-mid__title')->text()),
-                'dates' => explode(' ', preg_replace('/\s+/', ' ',
-                    trim(str_replace("\n", "", $tenderPq->find('.date .cardMainInfo__content')->text() ?: $tenderPq->find('.data-block__value')->text())))),
-            ];
-            $tenderInfo[] = $oneTenderInfo;
-        }
-
-        dd($tenderInfo);
-
-        return view('search.catalog', compact('tenderInfo'));
+        return view('search.catalog', compact('tenderInfo', 'categories', 'allTendersNum', 'filters', 'links'));
     }
 
-    public function parser($urlPage): bool|string
+    /**
+     * @return Builder
+     */
+    function selectFilter(): Builder
     {
-        $ch = curl_init($urlPage);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        $result = curl_exec($ch);
-        curl_close($ch);
+        return Filter::query()
+            ->leftJoin('filters_category', 'filters.fid', '=', 'filters_category.filter_id')
+            ->leftJoin('categories', 'categories.cid', '=', 'filters_category.category_id')
+            ->select('categories.cid', 'categories.code', 'filters.fid', 'filters.name');
+    }
 
-        return $result;
+    function setRightDeclension($countTenders): string
+    {
+        if ($countTenders < 21 && $countTenders > 10) {
+            return $countTenders . ' тендеров';
+        } else {
+            if ((int)str($countTenders)[-1] === 1) {
+                return $countTenders . ' тендер';
+            } elseif ((int)str($countTenders)[-1] < 5 && (int)str($countTenders)[-1] > 1) {
+                return $countTenders . ' тендера';
+            } else {
+                return $countTenders . ' тендеров';
+            }
+        }
     }
 }

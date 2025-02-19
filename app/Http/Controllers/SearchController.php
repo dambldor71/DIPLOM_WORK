@@ -3,16 +3,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\myModel;
-
 use App\Services\Search\SearchTenderService;
 use Illuminate\Http\Request;
-use phpQuery;
 
 class SearchController extends Controller
 {
-    public function index(SearchTenderService $service)
+    public function index(SearchTenderService $service, Request $request)
     {
-        return $service->searchAllTenders();
+        $searchBox = $request->query();
+        return $service->showAll($searchBox);
     }
 }

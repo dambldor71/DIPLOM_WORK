@@ -1,4 +1,4 @@
-@extends('header')
+ @extends('header')
 
 @section('content')
     <div class="breadcrumb-area breadcrumb-height" data-bg-image="{{ asset('myPublic/assets/images/background-img/1920400.png')}}">

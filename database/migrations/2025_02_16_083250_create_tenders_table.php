@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('tenders', function (Blueprint $table) {
+            $table->id();
+            $table->string('tender_code')->unique();
+            $table->text('description');
+            $table->string('link')->unique();
+            $table->foreignId('law')->constrained('filters');
+            $table->foreignId('purchase_stage')->constrained('filters');
+            $table->foreignId('type_of_select')->constrained('filters');
+            $table->float('price');
+            $table->text('customer');
+            $table->string('start_date');
+            $table->string('update_date');
+            $table->string('end_date')->value('00.00.0000');
+            $table->string('source_link');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('tender');
+    }
+};
