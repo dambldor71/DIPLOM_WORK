@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Services\Search\SearchTenderService;
+use App\Services\Search\TenderService;
 use Illuminate\Http\Request;
 
 class WelcomeController extends Controller
 {
-    public function indexWelcome(SearchTenderService $service) {
+    public function indexWelcome(TenderService $service) {
         $categories = Category::query()->get()->toArray();
 
         $filters = $service->selectFilter()->get()->toArray();

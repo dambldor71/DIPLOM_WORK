@@ -1,23 +1,14 @@
 <?php
 
 use App\Http\Controllers\ChosenTenderController;
+use App\Http\Controllers\FavouriteTenderController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TenderController;
 use App\Http\Controllers\WelcomeController;
 use App\Models\Category;
-use App\Services\Search\SearchTenderService;
+use App\Services\Search\TenderService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', [WelcomeController::class, 'indexWelcome']
-)->name('welcome');
-
-Route::get('/mainpage', function (SearchTenderService $service) {
-    $categories = Category::query()->get()->toArray();
-    $filters = $service->selectFilter()->get()->toArray();
-    return view('main.mainpage', compact('categories', 'filters'));
-})->middleware(['auth', 'verified'])->name('mainpage');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -25,13 +16,35 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::post('/chosentender', [ChosenTenderController::class, 'index'])->name('chosen.tender');
+Route::get('/', [WelcomeController::class, 'indexWelcome']
+)->name('welcome');
+
+Route::get('/mainpage', function (TenderService $service) {
+    $categories = Category::query()->get()->toArray();
+    $filters = $service->selectFilter()->get()->toArray();
+    return view('main.mainpage', compact('categories', 'filters'));
+})->middleware(['auth', 'verified'])->name('mainpage');
+
+Route::prefix('/catalog')->controller(TenderController::class)->group(function () {
+    Route::get('/catalog', [TenderController::class, 'index'])->name('search');
+    Route::get('/catalog/{id}', [TenderController::class, 'show'])->name('tender');
+});
+
+
+Route::post('/set-priority', [ChosenTenderController::class, 'addFavouriteTender']);
+
+Route::get('/favourite-catalog', [FavouriteTenderController::class, 'index'])->name('favourite');
+Route::get('/favourite-catalog/{id}', [FavouriteTenderController::class, 'show'])->name('favourite-tender');
+
+Route::get('/test', function (TenderService $service) {
+    $categories = Category::query()->get()->toArray();
+    $filters = $service->selectFilter()->get()->toArray();
+    return view('profile.editinfo', compact('categories', 'filters'));
+})->name('test');
 
 Route::get('/logout', function () {
     Auth::logout();
     return redirect()->route('mainpage');
 })->name('logout');
 
-Route::get('/search', [SearchController::class, 'index'])->name('search');
-Route::get('/search/{id}', [TenderController::class, 'index'])->name('tender');
 require __DIR__.'/auth.php';

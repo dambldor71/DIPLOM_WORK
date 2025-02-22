@@ -38,10 +38,10 @@ a{
         color: $primary;
     }
 }
-a, 
-button, 
+a,
+button,
 .btn,
-img, 
+img,
 input {
     transition: $baseTransition;
 }
@@ -477,7 +477,7 @@ img {
         }
     }
 }
-  
+
 
 @-webkit-keyframes sk-bouncedelay {
     0%,
@@ -491,7 +491,7 @@ img {
       transform: scale(1);
     }
 }
-  
+
 @keyframes sk-bouncedelay {
     0%,
     80%,
@@ -504,7 +504,7 @@ img {
       transform: scale(1);
     }
 }
-  
+
 
 .open_tm_preloader{
     position: fixed;

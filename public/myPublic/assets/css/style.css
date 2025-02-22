@@ -15680,7 +15680,7 @@ img {
 }
 
 .section-space-y-axis-100 {
-  padding-top: 100px;
+  padding-top: 25px;
   padding-bottom: 100px;
 }
 
@@ -20666,11 +20666,12 @@ blockquote .user-name:before {
 }
 
 .widgets-tags li a {
-  border: 1px solid #e8e8e8;
-  color: #7e7e7e;
+  border: 1px solid #2F4C73;
+  color: black;
   padding: 5px 15px;
   display: block;
   border-radius: 30px;
+  font-size: 13px;
 }
 
 .widgets-tags li a:hover {
@@ -20687,6 +20688,12 @@ blockquote .user-name:before {
 
 .sidebar-area.style-2 .widgets-title:before {
   left: -30px;
+}
+
+.sidebar {
+    background-color: #2F4C73;
+    left: 0;
+    top: 0;
 }
 
 /*----------------------------------------*/

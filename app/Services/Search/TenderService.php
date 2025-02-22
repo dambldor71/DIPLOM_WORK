@@ -9,35 +9,32 @@ use App\Models\Filter;
 use App\Models\Tender;
 use Illuminate\Database\Eloquent\Builder;
 
-class SearchTenderService
+class TenderService
 {
     public function showOne($id)
     {
         $categories = Category::query()->get()->toArray();
-
         $filters = $this->selectFilter()->get()->toArray();
 
         $oneTenderInfo = Tender::select('id', 'tender_code', 'price', 'link', 'description',
             'customer', 'law', 'purchase_stage', 'type_of_select', 'start_date', 'update_date', 'end_date', 'source_link')->where('id', $id)->get()->toArray()[0];
-
-        $usedFilters = $this->selectFilter()
+        $tenderFilters = $this->selectFilter()
             ->whereIn('fid', [$oneTenderInfo['law'], $oneTenderInfo['purchase_stage'], $oneTenderInfo['type_of_select']])
             ->pluck('name')->toArray();
 
-        return view('search.tender', compact('oneTenderInfo', 'usedFilters', 'categories', 'filters'));
+        return view('search.tender', compact('oneTenderInfo', 'tenderFilters', 'categories', 'filters'));
     }
 
-    public function showAll($searchBox)
+    public function showAll($tenderInformatrion, $searchBox, $catalogType = 'all')
     {
-        $tenderInfo = Tender::select('id', 'tender_code', 'price', 'link', 'description',
-            'customer', 'start_date', 'update_date', 'end_date', 'source_link');
+        $tenderInfo = $tenderInformatrion;
 
         if (!empty($searchBox)) {
             $lawArr = [];
             $stageArr = [];
             $typeArr = [];
             foreach ($searchBox as $key => $searchElement) {
-                if ($key === 'searchString' || $key === 'page') {
+                if ($key === 'searchString' || $key === 'page' || $key === 'price') {
                     continue;
                 }
 
@@ -64,7 +61,13 @@ class SearchTenderService
         }
 
         $links = 0;
-        $allTendersNum = $this->setRightDeclension($tenderInfo->count());
+        $allTendersNum = $catalogType === 'all'
+                ? 'По результатам запроса найдено ' . $this->setRightDeclension($tenderInfo->count())
+                : 'Всего в избранном ' . $this->setRightDeclension($tenderInfo->count());
+
+        $title = $catalogType === 'all'
+            ? 'Поиск тендеров'
+            : 'Избранное';
 
         if (count($tenderInfo->get()) > 10) {
             $links += 1;
@@ -72,11 +75,20 @@ class SearchTenderService
         } else {
             $tenderInfo = $tenderInfo->get();
         }
-        $categories = Category::query()->get()->toArray();
 
-        $filters = $this->selectFilter()->get()->toArray();
+        $usedFilters = Filter::query()
+            ->select('name')
+            ->whereIn('fid', array_slice(array_keys($searchBox), 2))
+            ->get()
+            ->toArray();
 
-        return view('search.catalog', compact('tenderInfo', 'categories', 'allTendersNum', 'filters', 'links'));
+        $categories = Category::query()->get()->sortBy('cid')->toArray();
+        $filters = $this->selectFilter()->get()->sortBy('fid')->toArray();
+
+        return view('search.catalog',
+            compact(
+                'tenderInfo', 'categories', 'allTendersNum', 'filters', 'links', 'title', 'usedFilters'
+            ));
     }
 
     /**

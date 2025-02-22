@@ -1,11 +1,4 @@
-@php
-    use Illuminate\Support\Facades\Auth;
-    use Illuminate\Support\Facades\DB;
-
-    $priority = DB::table('priority')->pluck('name');
-    $stage = DB::table('work_stage')->pluck('name');
-    $favArray = ['Приоритет' => $priority, 'Этап работ' => $stage];
-@endphp
+@php use Illuminate\Support\Facades\Auth; @endphp
 @extends('header')
 
 @section('content')
@@ -14,7 +7,7 @@
             <div class="row h-100">
                 <div class="col-lg-12">
                     <div class="breadcrumb-item text-night-rider">
-                        <h2 class="breadcrumb-heading">{{$title}}</h2>
+                        <h2 class="breadcrumb-heading">ИЗБРАННЫЕ ТЕНДЕРЫ</h2>
                         <ul>
                             <li>
                                 <a href="{{route('mainpage')}}">На главную</a>
@@ -27,23 +20,14 @@
     </div>
     <div class="col-lg-12">
         <div>
-            <h3 style="margin-left: 350px; margin-top: 50px; color: #1f2226">{{$allTendersNum}}</h3>
+{{--            <h3 style="margin-left: 350px; margin-top: 100px; color: #1f2226">пк запроса найдено {{$allTendersNum}}</h3>--}}
         </div>
-    </div>
-    <div>
-        <ul class="widgets-tags" style="margin-left: 345px; margin-top: 25px; color: #2F4C73">
-            @foreach($usedFilters as $uFilter)
-                <li>
-                    <a>{{$uFilter['name']}}</a>
-                </li>
-            @endforeach
-        </ul>
     </div>
     <div class="shop-area section-space-y-axis-100">
         <div class="container">
             <div class="row">
                 <div class="col-xl-3 col-lg-4 order-lg-1 order-2 pt-10 pt-lg-0">
-                    <form action="{{$title === 'Избранное' ? route('favourite') : route('search')}}" method="GET">
+                    <form action="{{route('search')}}" method="GET">
                         <div class="widgets-searchbox widgets-area py-6 mb-9">
                             <input name='searchString' class="input-field" type="search" placeholder="Ключевое слово">
                             <button class="widgets-searchbox-btn" type="submit">
@@ -51,37 +35,17 @@
                             </button>
                         </div>
                         <div class="sidebar-area style-2">
-                            @if($title === 'Избранное')
-                                @foreach($favArray as $key => $cat)
-                                    <div class="widgets-area">
-                                        <h2 class="widgets-title mb-5">{{$key}}</h2>
-                                        <div class="widget-item">
-                                            <ul class="widgets-tags">
-                                                @foreach($cat as $elem)
-                                                    <li>
-                                                        <a href="#">{{$elem}}</a>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @endif
-                            <div class="widgets-area widgets-filter mb-9">
-                                <h2 class="widgets-title mb-5">Цена</h2>
-                                <div class="price-filter">
-                                    <input type="text" class="tromic-range-slider" name="price" data-type="double" data-min="0" data-from="0" data-to="10000000" data-max="10000000" data-grid="false" />
-                                </div>
-                            </div>
                             @foreach($categories as $category)
                                 <div class="widgets-area mb-9">
                                     <h2 class="widgets-title mb-5">{{$category['name']}}</h2>
                                     <div class="widgets-item">
                                         <ul class="widgets-checkbox">
+{{--                                            @dd($_SERVER)--}}
                                             @foreach($filters as $value)
                                                 {{--                                            @dd($value)--}}
                                                 @if($value['cid'] === $category['cid'])
                                                     <li>
+{{--                                                        <input name='searchString' class="input-field" type="search" placeholder="Ключевое слово, номер закупки, город">--}}
                                                         <input name='{{$value['fid']}}' value='{{$value['cid'] . '-' . $value['fid']}}' class="input-checkbox" type="checkbox" id="color-selection-{{$value['fid']}}">
                                                         <label class="label-checkbox mb-0" for="color-selection-{{$value['fid']}}">{{$value['name']}}
                                                         </label>
@@ -142,12 +106,11 @@
                                     <div class="col-12">
                                         <div class="product-list-item">
                                             <div class="product-list-content">
-                                            <a class="product-name pb-2" href="{{route('tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
+                                            <a class="product-name pb-2" href="{{route('favourite-tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
                                                 <div class="price-box pb-1">
-                                                    <span class="new-price" style="color: #2F4C73">{{$oneTender['price']}} ₽</span>
+                                                    <span class="new-price">{{$oneTender['price']}} ₽</span>
                                                 </div>
-                                                <div>{{$oneTender['description']}}</div>
-                                                <p class="short-desc mb-0" style="color: #2F4C73">{{$oneTender['customer']}}</p>
+                                                <p class="short-desc mb-0">{{$oneTender['customer']}}</p>
                                             </div>
                                             <li class="dropdown d-none d-lg-block">
                                                 <button class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">

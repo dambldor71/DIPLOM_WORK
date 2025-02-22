@@ -1,31 +1,40 @@
-<!DOCTYPE html>
+@php
+    use Illuminate\Support\Facades\DB;
+
+    $priority = DB::table('priority')->pluck('name');
+    $stage = DB::table('work_stage')->pluck('name');
+    $favArray = ['Приоритет' => $priority, 'Этап работ' => $stage];
+@endphp
+
+    <!DOCTYPE html>
 <html lang="zxx">
 
 <head>
 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Tromic - Shop</title>
-    <meta name="robots" content="index, follow" />
-    <meta name="description" content="Tromic car accessories bootstrap 5 template is an awesome website template for any modern car accessories shop.">
+    <title>Pumori Tender</title>
+    <meta name="robots" content="index, follow"/>
+    <meta name="description"
+          content="Tromic car accessories bootstrap 5 template is an awesome website template for any modern car accessories shop.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('myPublic/assets/images/favicon.ico')}}" />
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('myPublic/assets/images/favicon.ico')}}"/>
 
     <!-- CSS
     ============================================ -->
 
     <!-- Vendor CSS (Contain Bootstrap, Icon Fonts) -->
-    <link rel="stylesheet" href="{{ asset('myPublic/assets/css/vendor/font-awesome.min.css')}}" />
-    <link rel="stylesheet" href="{{ asset('myPublic/assets/css/vendor/Pe-icon-7-stroke.css')}}" />
+    <link rel="stylesheet" href="{{ asset('myPublic/assets/css/vendor/font-awesome.min.css')}}"/>
+    <link rel="stylesheet" href="{{ asset('myPublic/assets/css/vendor/Pe-icon-7-stroke.css')}}"/>
 
     <!-- Plugin CSS (Global Plugins Files) -->
     <link rel="stylesheet" href="{{ asset('myPublic/assets/css/plugins/animate.min.css')}}">
     <link rel="stylesheet" href="{{ asset('myPublic/assets/css/plugins/jquery-ui.min.css')}}">
     <link rel="stylesheet" href="{{ asset('myPublic/assets/css/plugins/swiper-bundle.min.css')}}">
     <link rel="stylesheet" href="{{ asset('myPublic/assets/css/plugins/nice-select.css')}}">
-    <link rel="stylesheet" href="{{ asset('myPublic/assets/css/plugins/magnific-popup.min.css')}}" />
-    <link rel="stylesheet" href="{{ asset('myPublic/assets/css/plugins/ion.rangeSlider.min.css')}}" />
+    <link rel="stylesheet" href="{{ asset('myPublic/assets/css/plugins/magnific-popup.min.css')}}"/>
+    <link rel="stylesheet" href="{{ asset('myPublic/assets/css/plugins/ion.rangeSlider.min.css')}}"/>
 
     <!-- Minify Version -->
     <!-- <link rel="stylesheet" href="assets/css/vendor/vendor.min.css"> -->
@@ -66,7 +75,7 @@
                                         <nav class="main-nav">
                                             <ul>
                                                 <li class="megamenu-holder">
-                                                    <a href="">Личный кабинет
+                                                    <a href="{{route('test')}}">Личный кабинет
                                                     </a>
                                                 </li>
                                                 <li class="megamenu-holder">
@@ -85,7 +94,7 @@
                                                                         @if($value['cid'] === $category['cid'])
                                                                             @if($num < 6)
                                                                                 <li>
-                                                                                    <a href="http://{{$_SERVER['HTTP_HOST']}}/search?{{$value['fid']}}={{$category['cid']}}-{{$value['fid']}}">{{$value['name']}}</a>
+                                                                                    <a href="http://{{$_SERVER['HTTP_HOST']}}/catalog?{{$value['fid']}}={{$category['cid']}}-{{$value['fid']}}">{{$value['name']}}</a>
                                                                                 </li>
                                                                                 @php
                                                                                     $num += 1
@@ -99,10 +108,22 @@
                                                     </ul>
                                                 </li>
                                                 <li class="megamenu-holder">
-                                                    <a href="">Избранное
+                                                    <a href="{{route('favourite')}}">Избранное
                                                         <i class="pe-7s-angle-down"></i>
                                                     </a>
                                                     <ul class="drop-menu megamenu">
+                                                        @foreach($favArray as $key => $cat)
+                                                            <li>
+                                                                <span class="title">{{$key}}</span>
+                                                                <ul>
+                                                                    @foreach($cat as $elem)
+                                                                        <li>
+                                                                            <a href="#">{{$elem}}</a>
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </li>
+                                                        @endforeach
                                                     </ul>
                                                 </li>
                                                 <li class="megamenu-holder">
@@ -123,10 +144,13 @@
                                         @auth
                                             <ul>
                                                 <li class="dropdown d-none d-lg-block">
-                                                    <button class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                    <button class="btn btn-link dropdown-toggle ht-btn p-0"
+                                                            type="button" id="settingButton" data-bs-toggle="dropdown"
+                                                            aria-label="setting" aria-expanded="false">
                                                         {{ Auth::user()->name }}
                                                     </button>
-                                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingButton">
+                                                    <ul class="dropdown-menu dropdown-menu-end"
+                                                        aria-labelledby="settingButton">
                                                         <x-dropdown-link :href="route('profile.edit')">
                                                             {{ __('Смена данных') }}
                                                         </x-dropdown-link>
@@ -137,12 +161,14 @@
                                                 </li>
                                             </ul>
                                         @else
-                                            <a href="{{ route('login') }}" class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
+                                            <a href="{{ route('login') }}"
+                                               class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
                                                 Войти
                                             </a>
 
                                             @if (Route::has('register'))
-                                                <a href="{{ route('register') }}" class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
+                                                <a href="{{ route('register') }}"
+                                                   class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
                                                     Зарегистрироваться
                                                 </a>
                                             @endif
@@ -163,11 +189,13 @@
                     </div>
                     <div class="offcanvas-user-info text-center px-6 pb-5">
                         <div class=" text-silver">
-                            <p class="shipping mb-0">Free delivery on order over <span class="text-primary">$200</span></p>
+                            <p class="shipping mb-0">Free delivery on order over <span class="text-primary">$200</span>
+                            </p>
                         </div>
                         <ul class="dropdown-wrap justify-content-center text-silver">
                             <li class="dropdown dropup">
-                                <button class="btn btn-link dropdown-toggle ht-btn" type="button" id="languageButtonTwo" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button class="btn btn-link dropdown-toggle ht-btn" type="button" id="languageButtonTwo"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
                                     English
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="languageButtonTwo">
@@ -177,7 +205,8 @@
                                 </ul>
                             </li>
                             <li class="dropdown dropup">
-                                <button class="btn btn-link dropdown-toggle ht-btn usd-dropdown" type="button" id="currencyButtonTwo" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button class="btn btn-link dropdown-toggle ht-btn usd-dropdown" type="button"
+                                        id="currencyButtonTwo" data-bs-toggle="dropdown" aria-expanded="false">
                                     USD
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="currencyButtonTwo">
@@ -186,7 +215,8 @@
                                 </ul>
                             </li>
                             <li class="dropdown dropup">
-                                <button class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButtonTwo" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button class="btn btn-link dropdown-toggle ht-btn p-0" type="button"
+                                        id="settingButtonTwo" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="pe-7s-users"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingButtonTwo">
@@ -417,15 +447,21 @@
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-tippy="Close" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                data-tippy="Close" data-tippy-inertia="true" data-tippy-animation="shift-away"
+                                data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="modal-search">
                             <span class="searchbox-info">Введите наименование и нажмите Enter для поиска или ESC для выхода</span>
                             <form action="#" class="hm-searchbox">
-                                <input type="text" name="Search entire store here..." value="Введите наименование здесь..." onblur="if(this.value==''){this.value='Search entire store here...'}" onfocus="if(this.value=='Search entire store here...'){this.value=''}">
-                                <button class="search-btn" type="submit" aria-label="searchbtn"><i class="pe-7s-search"></i></button>
+                                <input type="text" name="Search entire store here..."
+                                       value="Введите наименование здесь..."
+                                       onblur="if(this.value==''){this.value='Search entire store here...'}"
+                                       onfocus="if(this.value=='Search entire store here...'){this.value=''}">
+                                <button class="search-btn" type="submit" aria-label="searchbtn"><i
+                                        class="pe-7s-search"></i></button>
                             </form>
                         </div>
                     </div>
@@ -437,14 +473,21 @@
                 <div class="minicart-content">
                     <div class="minicart-heading">
                         <h4 class="mb-0">Shopping Cart</h4>
-                        <a href="#" class="button-close"><i class="pe-7s-close" data-tippy="Close" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i></a>
+                        <a href="#" class="button-close"><i class="pe-7s-close" data-tippy="Close"
+                                                            data-tippy-inertia="true" data-tippy-animation="shift-away"
+                                                            data-tippy-delay="50" data-tippy-arrow="true"
+                                                            data-tippy-theme="sharpborder"></i></a>
                     </div>
                     <ul class="minicart-list">
                         <li class="minicart-product">
                             <a class="product-item_remove" href="#"><i
-                                    class="pe-7s-trash" data-tippy="Wanna Remove?" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i></a>
+                                    class="pe-7s-trash" data-tippy="Wanna Remove?" data-tippy-inertia="true"
+                                    data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true"
+                                    data-tippy-theme="sharpborder"></i></a>
                             <a href="shop.html" class="product-item_img">
-                                <img class="img-full" src="{{ asset('myPublic/assets/images/product/small-size/1-1-70x70.png')}}" alt="Product Image">
+                                <img class="img-full"
+                                     src="{{ asset('myPublic/assets/images/product/small-size/1-1-70x70.png')}}"
+                                     alt="Product Image">
                             </a>
                             <div class="product-item_content">
                                 <a class="product-item_title" href="shop.html">Tail Light</a>
@@ -453,9 +496,13 @@
                         </li>
                         <li class="minicart-product">
                             <a class="product-item_remove" href="#"><i
-                                    class="pe-7s-trash" data-tippy="Wanna Remove?" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i></a>
+                                    class="pe-7s-trash" data-tippy="Wanna Remove?" data-tippy-inertia="true"
+                                    data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true"
+                                    data-tippy-theme="sharpborder"></i></a>
                             <a href="shop.html" class="product-item_img">
-                                <img class="img-full" src="{{ asset('myPublic/assets/images/product/small-size/1-2-70x70.png')}}" alt="Product Image">
+                                <img class="img-full"
+                                     src="{{ asset('myPublic/assets/images/product/small-size/1-2-70x70.png')}}"
+                                     alt="Product Image">
                             </a>
                             <div class="product-item_content">
                                 <a class="product-item_title" href="shop.html">Wiper Blades</a>
@@ -464,10 +511,14 @@
                         </li>
                         <li class="minicart-product">
                             <a class="product-item_remove" href="#">
-                                <i class="pe-7s-trash" data-tippy="Wanna Remove?" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i>
+                                <i class="pe-7s-trash" data-tippy="Wanna Remove?" data-tippy-inertia="true"
+                                   data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true"
+                                   data-tippy-theme="sharpborder"></i>
                             </a>
                             <a href="shop.html" class="product-item_img">
-                                <img class="img-full" src="{{ asset('myPublic/assets/images/product/small-size/1-3-70x70.png')}}" alt="Product Image">
+                                <img class="img-full"
+                                     src="{{ asset('myPublic/assets/images/product/small-size/1-3-70x70.png')}}"
+                                     alt="Product Image">
                             </a>
                             <div class="product-item_content">
                                 <a class="product-item_title" href="shop.html">Suspension</a>
@@ -476,10 +527,14 @@
                         </li>
                         <li class="minicart-product">
                             <a class="product-item_remove" href="#">
-                                <i class="pe-7s-trash" data-tippy="Wanna Remove?" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i>
+                                <i class="pe-7s-trash" data-tippy="Wanna Remove?" data-tippy-inertia="true"
+                                   data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true"
+                                   data-tippy-theme="sharpborder"></i>
                             </a>
                             <a href="shop.html" class="product-item_img">
-                                <img class="img-full" src="{{ asset('myPublic/assets/images/product/small-size/1-4-70x70.png')}}" alt="Product Image">
+                                <img class="img-full"
+                                     src="{{ asset('myPublic/assets/images/product/small-size/1-4-70x70.png')}}"
+                                     alt="Product Image">
                             </a>
                             <div class="product-item_content">
                                 <a class="product-item_title" href="shop.html">Air Filter</a>
@@ -488,10 +543,14 @@
                         </li>
                         <li class="minicart-product">
                             <a class="product-item_remove" href="#">
-                                <i class="pe-7s-trash" data-tippy="Wanna Remove?" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i>
+                                <i class="pe-7s-trash" data-tippy="Wanna Remove?" data-tippy-inertia="true"
+                                   data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true"
+                                   data-tippy-theme="sharpborder"></i>
                             </a>
                             <a href="shop.html" class="product-item_img">
-                                <img class="img-full" src="{{ asset('myPublic/assets/images/product/small-size/1-5-70x70.png')}}" alt="Product Image">
+                                <img class="img-full"
+                                     src="{{ asset('myPublic/assets/images/product/small-size/1-5-70x70.png')}}"
+                                     alt="Product Image">
                             </a>
                             <div class="product-item_content">
                                 <a class="product-item_title" href="shop.html">Car Brakes</a>
@@ -522,7 +581,8 @@
 
     <!-- Begin Footer Area -->
     <div class="footer-area">
-        <div class="footer-top section-space-y-axis-100 text-lavender" data-bg-image="{{ asset('myPublic/assets/images/background-img/1-4-1920x419.png')}}">
+        <div class="footer-top section-space-y-axis-100 text-lavender"
+             data-bg-image="{{ asset('myPublic/assets/images/background-img/1-4-1920x419.png')}}">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-3">
@@ -532,26 +592,36 @@
                                     <img src="{{ asset('myPublic/assets/images/logo/smile.png')}}" alt="Logo">
                                 </a>
                             </div>
-                            <p class="short-desc mb-2">В случае возникновения вопросов по работе сервиса рекомендуем обратиться в поддержку в одной из социальных сетей или воспользоваться блоком "Поддержка".</p>
+                            <p class="short-desc mb-2">В случае возникновения вопросов по работе сервиса рекомендуем
+                                обратиться в поддержку в одной из социальных сетей или воспользоваться блоком
+                                "Поддержка".</p>
                             <div class="social-link pt-2">
                                 <ul>
                                     <li>
-                                        <a href="#" data-tippy="Twitter" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
+                                        <a href="#" data-tippy="Twitter" data-tippy-inertia="true"
+                                           data-tippy-animation="shift-away" data-tippy-delay="50"
+                                           data-tippy-arrow="true" data-tippy-theme="sharpborder">
                                             <i class="fa fa-twitter"></i>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" data-tippy="Tumblr" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
+                                        <a href="#" data-tippy="Tumblr" data-tippy-inertia="true"
+                                           data-tippy-animation="shift-away" data-tippy-delay="50"
+                                           data-tippy-arrow="true" data-tippy-theme="sharpborder">
                                             <i class="fa fa-tumblr"></i>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" data-tippy="Facebook" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
+                                        <a href="#" data-tippy="Facebook" data-tippy-inertia="true"
+                                           data-tippy-animation="shift-away" data-tippy-delay="50"
+                                           data-tippy-arrow="true" data-tippy-theme="sharpborder">
                                             <i class="fa fa-facebook"></i>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" data-tippy="Instagram" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
+                                        <a href="#" data-tippy="Instagram" data-tippy-inertia="true"
+                                           data-tippy-animation="shift-away" data-tippy-delay="50"
+                                           data-tippy-arrow="true" data-tippy-theme="sharpborder">
                                             <i class="fa fa-instagram"></i>
                                         </a>
                                     </li>

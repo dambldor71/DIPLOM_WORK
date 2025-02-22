@@ -8,25 +8,25 @@ $(document).ready(function (){
         let tenderId = $this.closest('.dropdown-menu').attr('id');
         console.log(priority, tenderId)
         console.log(userId);
-        console.log(csrfToken);
 
-        // $.ajax({
-        //     method: 'POST',
-        //     url: 'http://127.0.0.1:8001/chosentender',
-        //     headers: {
-        //         'X-CSRF-TOKEN': csrfToken
-        //     },
-        //     data: {
-        //         'tenderId': tenderId,
-        //         'userId': userId,
-        //         'priority': priority
-        //     },
-        //     success:function(response)
-        //     {
-        //
-        //     },
-        //     error: function(response) {
-        //     }
-        // });
+        $.ajax({
+            url: '/set-priority',
+            type: 'POST',
+            data: {
+                'tenderId': tenderId,
+                'userId': userId,
+                'priority': priority
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success:function(response)
+            {
+                alert("Тендер добавлен");
+            },
+            error: function(response) {
+                console.log(response)
+            }
+        });
     })
 })
