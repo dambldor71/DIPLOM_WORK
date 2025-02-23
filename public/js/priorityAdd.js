@@ -34,4 +34,6 @@ formAddPriority.addEventListener('submit', function(event) {
             }
         });
     }
+
+    location.reload(true);
 });

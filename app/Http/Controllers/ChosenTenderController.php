@@ -20,6 +20,12 @@ class ChosenTenderController extends Controller
 
             PriorityTenderModel::query()
                 ->insert(['tender_id' => $favouriteTenderId['id'], 'priority_id' => $request->priority]);
+        } else {
+            $favouriteTenderId = FavouriteTenderModel::select('id')
+                ->where('tender_id', $request->tenderId)->first()->toArray();
+
+            PriorityTenderModel::where('tender_id', $favouriteTenderId['id'])
+                ->update(['priority_id' => $request->priority]);
         }
     }
 }

@@ -5,6 +5,7 @@
     $priority = DB::table('priority')->where('user_id', Auth::id())->pluck('name');
     $stage = DB::table('work_stage')->where('user_id', Auth::id())->pluck('name');
     $favArray = ['Приоритет' => $priority, 'Этап работ' => $stage];
+    $favTenders = DB::table('favourite_tenders')->pluck('tender_id')->toArray();
 @endphp
 @extends('header')
 
@@ -150,9 +151,15 @@
                                                 <p class="short-desc mb-0" style="color: #2F4C73">{{$oneTender['customer']}}</p>
                                             </div>
                                             <li class="dropdown d-none d-lg-block">
-                                                <button class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
-                                                    Статус
-                                                </button>
+                                                @if($title === 'Избранное')
+                                                    <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: {{$oneTender['color_code']}};text-align: center" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                        {{$oneTender['name']}}
+                                                    </button>
+                                                @else
+                                                    <button style="font-size: 20px; color: #2F4C73" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                        {{in_array($oneTender['id'], $favTenders) ? '🟢' : '⚪'}}
+                                                    </button>
+                                                @endif
                                                 <ul class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="settingButton">
                                                     @foreach(DB::table('priority')->where('user_id', Auth::id())->get() as $element)
                                                         <button id='{{$element->id}}' class="btn tender-status" style="color: white; background: {{$element->color_code}};text-align: center">
@@ -170,12 +177,6 @@
                     <div class="pagination-area pt-10">
                         <nav aria-label="Page navigation example">
                             <ul class="pagination justify-content-end">
-{{--                                <div class="pagination-area pt-10">--}}
-{{--                                    @if ($links == 1)--}}
-{{--                                        @dd($tenderInfo->links()->elements)--}}
-{{--                                    @endif--}}
-{{--                                </div>--}}
-{{--                                @dd($tenderInfo->links()->elements)--}}
                                 @if($links >= 1)
                                     @foreach($tenderInfo->links()->elements as $element)
                                         @if($element === '...')
@@ -187,14 +188,6 @@
                                         @endif
                                     @endforeach
                                 @endif
-{{--                                <li class="page-item">--}}
-{{--                                    <a class="page-link" href="#" aria-label="Previous">&laquo;</a>--}}
-{{--                                </li>--}}
-{{--                                <li class="page-item active"><a class="page-link" href="#">1</a></li>--}}
-{{--                                <li class="page-item"><a class="page-link" href="#">2</a></li>--}}
-{{--                                <li class="page-item">--}}
-{{--                                    <a class="page-link" href="#" aria-label="Next">&raquo;</a>--}}
-{{--                                </li>--}}
                             </ul>
                         </nav>
                     </div>

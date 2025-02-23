@@ -14,6 +14,9 @@ class TenderController extends Controller
     {
         $tenderInfo = Tender::select('id', 'tender_code', 'price', 'link', 'description',
             'customer', 'start_date', 'update_date', 'end_date', 'source_link');
+
+
+
         $searchBox = $request->query();
 
         return $service->showAll($tenderInfo, $searchBox);

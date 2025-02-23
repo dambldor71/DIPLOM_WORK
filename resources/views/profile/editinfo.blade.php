@@ -114,28 +114,31 @@
                                         <table class="table table-bordered">
                                             <thead>
                                             <tr>
-                                                <th>Номер заказа</th>
-                                                <th>Дата</th>
-                                                <th>Сумма</th>
-                                                <th>Статус</th>
-                                                <th>Действия</th>
+                                                <th>Описание</th>
+                                                <th>Значение</th>
+                                                <th>Подробнее</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <td>#2014</td>
-                                                <td>2023-10-26</td>
-                                                <td>1500 ₽</td>
-                                                <td>Выполнен</td>
-                                                <td><a href="#" class="btn btn-primary btn-sm">Подробнее</a></td>
+                                                <td>Всего тендеров в избранном</td>
+                                                <td>count</td>
+                                                <td><a href="#" class="btn btn-primary btn-sm">Перейти</a></td>
                                             </tr>
-                                            <tr>
-                                                <td>#2015</td>
-                                                <td>2023-10-27</td>
-                                                <td>2000 ₽</td>
-                                                <td>В обработке</td>
-                                                <td><a href="#" class="btn btn-primary btn-sm">Подробнее</a></td>
-                                            </tr>
+                                            @foreach($priorities as $priority)
+                                                <tr>
+                                                    <td>Всего тендеров с приоритетом {{$priority['name']}}</td>
+                                                    <td>count</td>
+                                                    <td><a href="#" class="btn btn-primary btn-sm">Перейти</a></td>
+                                                </tr>
+                                            @endforeach
+                                            @foreach($workStage as $stage)
+                                                <tr>
+                                                    <td>Всего тендеров на этапе работ {{$stage['name']}}</td>
+                                                    <td>count</td>
+                                                    <td><a href="#" class="btn btn-primary btn-sm">Перейти</a></td>
+                                                </tr>
+                                            @endforeach
                                             </tbody>
                                         </table>
                                     </div>

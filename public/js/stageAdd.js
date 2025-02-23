@@ -29,4 +29,6 @@ formAddStage.addEventListener('submit', function(event) {
             }
         });
     }
+
+    location.reload(true);
 });

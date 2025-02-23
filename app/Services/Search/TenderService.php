@@ -28,7 +28,7 @@ class TenderService
     public function showAll($tenderInformatrion, $searchBox, $catalogType = 'all')
     {
         $tenderInfo = $tenderInformatrion;
-
+//        dd($tenderInformatrion->get()->toArray());
         if (!empty($searchBox)) {
             $lawArr = [];
             $stageArr = [];
