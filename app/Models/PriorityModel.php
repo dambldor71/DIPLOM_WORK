@@ -8,5 +8,5 @@ class PriorityModel extends Model
 {
     protected $table = 'priority';
 
-    protected $fillable = ['name', 'code', 'color_code'];
+    protected $fillable = ['name', 'code', 'color_code', 'user_id'];
 }

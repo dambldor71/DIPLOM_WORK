@@ -2,8 +2,8 @@
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\DB;
 
-    $priority = DB::table('priority')->pluck('name');
-    $stage = DB::table('work_stage')->pluck('name');
+    $priority = DB::table('priority')->where('user_id', Auth::id())->pluck('name');
+    $stage = DB::table('work_stage')->where('user_id', Auth::id())->pluck('name');
     $favArray = ['Приоритет' => $priority, 'Этап работ' => $stage];
 @endphp
 @extends('header')
@@ -154,7 +154,7 @@
                                                     Статус
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="settingButton">
-                                                    @foreach(DB::table('priority')->get() as $element)
+                                                    @foreach(DB::table('priority')->where('user_id', Auth::id())->get() as $element)
                                                         <button id='{{$element->id}}' class="btn tender-status" style="color: white; background: {{$element->color_code}};text-align: center">
                                                             {{$element->name}}
                                                         </button>

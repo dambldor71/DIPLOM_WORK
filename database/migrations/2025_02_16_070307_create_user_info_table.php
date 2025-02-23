@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('surname');
             $table->string('birthday');
+            $table->text('phone');
+            $table->text('telegram');
             $table->timestamps();
         });
     }

@@ -1,8 +1,9 @@
 @php
+    use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\DB;
 
-    $priority = DB::table('priority')->pluck('name');
-    $stage = DB::table('work_stage')->pluck('name');
+    $priority = DB::table('priority')->where('user_id', Auth::id())->pluck('name');
+    $stage = DB::table('work_stage')->where('user_id', Auth::id())->pluck('name');
     $favArray = ['Приоритет' => $priority, 'Этап работ' => $stage];
 @endphp
 
@@ -75,7 +76,7 @@
                                         <nav class="main-nav">
                                             <ul>
                                                 <li class="megamenu-holder">
-                                                    <a href="{{route('test')}}">Личный кабинет
+                                                    <a href="{{route('test',  Auth::id())}}">Личный кабинет
                                                     </a>
                                                 </li>
                                                 <li class="megamenu-holder">

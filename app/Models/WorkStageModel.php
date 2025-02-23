@@ -8,5 +8,5 @@ class WorkStageModel extends Model
 {
     protected $table = 'work_stage';
 
-    protected $fillable = ['name', 'code'];
+    protected $fillable = ['name', 'code', 'user_id'];
 }

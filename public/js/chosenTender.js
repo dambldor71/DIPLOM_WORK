@@ -2,7 +2,6 @@
 $(document).ready(function (){
 
     $('.tender-status').click(function () {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
         let $this = $(this);
         const priority = this.id;
         let tenderId = $this.closest('.dropdown-menu').attr('id');
