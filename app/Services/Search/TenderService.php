@@ -77,9 +77,8 @@ class TenderService
         }
 
         $usedFilters = Filter::query()
-            ->select('name')
             ->whereIn('fid', array_slice(array_keys($searchBox), 2))
-            ->get()
+            ->pluck('name')
             ->toArray();
 
         $categories = Category::query()->get()->sortBy('cid')->toArray();

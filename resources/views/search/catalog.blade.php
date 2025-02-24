@@ -35,7 +35,7 @@
         <ul class="widgets-tags" style="margin-left: 345px; margin-top: 25px; color: #2F4C73">
             @foreach($usedFilters as $uFilter)
                 <li>
-                    <a>{{$uFilter['name']}}</a>
+                    <a>{{$uFilter}}</a>
                 </li>
             @endforeach
         </ul>
@@ -83,7 +83,11 @@
                                                 {{--                                            @dd($value)--}}
                                                 @if($value['cid'] === $category['cid'])
                                                     <li>
-                                                        <input name='{{$value['fid']}}' value='{{$value['cid'] . '-' . $value['fid']}}' class="input-checkbox" type="checkbox" id="color-selection-{{$value['fid']}}">
+                                                        @if(in_array($value['name'], $usedFilters) === true)
+                                                            <input name='{{$value['fid']}}' value='{{$value['cid'] . '-' . $value['fid']}}' class="input-checkbox" type="checkbox" id="color-selection-{{$value['fid']}}" checked>
+                                                        @else
+                                                            <input name='{{$value['fid']}}' value='{{$value['cid'] . '-' . $value['fid']}}' class="input-checkbox" type="checkbox" id="color-selection-{{$value['fid']}}">
+                                                        @endif
                                                         <label class="label-checkbox mb-0" for="color-selection-{{$value['fid']}}">{{$value['name']}}
                                                         </label>
                                                     </li>
