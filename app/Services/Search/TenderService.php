@@ -6,7 +6,9 @@ namespace App\Services\Search;
 
 use App\Models\Category;
 use App\Models\Filter;
+use App\Models\PriorityModel;
 use App\Models\Tender;
+use App\Models\WorkStageModel;
 use Illuminate\Database\Eloquent\Builder;
 
 class TenderService
@@ -16,37 +18,49 @@ class TenderService
         $categories = Category::query()->get()->toArray();
         $filters = $this->selectFilter()->get()->toArray();
 
-        $oneTenderInfo = Tender::select('id', 'tender_code', 'price', 'link', 'description',
-            'customer', 'law', 'purchase_stage', 'type_of_select', 'start_date', 'update_date', 'end_date', 'source_link')->where('id', $id)->get()->toArray()[0];
+        $oneTenderInfo = Tender::select(
+            'id', 'tender_code', 'price', 'link', 'description',
+            'customer', 'law', 'purchase_stage', 'type_of_select',
+            'start_date', 'update_date', 'end_date', 'source_link')
+            ->where('id', $id)
+            ->get()
+            ->toArray()[0];
         $tenderFilters = $this->selectFilter()
             ->whereIn('fid', [$oneTenderInfo['law'], $oneTenderInfo['purchase_stage'], $oneTenderInfo['type_of_select']])
             ->pluck('name')->toArray();
 
-        return view('search.tender', compact('oneTenderInfo', 'tenderFilters', 'categories', 'filters'));
+        return view('search.tender', compact(
+            'oneTenderInfo', 'tenderFilters', 'categories', 'filters'
+        ));
     }
 
     public function showAll($tenderInformatrion, $searchBox, $catalogType = 'all')
     {
         $tenderInfo = $tenderInformatrion;
-//        dd($tenderInformatrion->get()->toArray());
+//        dd($tenderInformatrion->get()->toArray(), $searchBox);
+        $usedStagePriorityArr = [];
+        $usedFiltersIds = [];
+
         if (!empty($searchBox)) {
             $lawArr = [];
             $stageArr = [];
             $typeArr = [];
+
             foreach ($searchBox as $key => $searchElement) {
-                if ($key === 'searchString' || $key === 'page' || $key === 'price') {
+                $notNums = ['searchString', 'page', 'price', 'priority', 'stage'];
+                if (in_array($key, $notNums)) {
                     continue;
                 }
 
-                $elemArr = explode('-', $searchElement);
-
-                if ($elemArr[0] === '1') {
-                    $lawArr[] = $elemArr[1];
-                } elseif ($elemArr[0] === '2') {
-                    $stageArr[] = $elemArr[1];
+                if ($searchElement === '1') {
+                    $lawArr[] = $key;
+                } elseif ($searchElement === '2') {
+                    $stageArr[] = $key;
                 } else {
-                    $typeArr[] = $elemArr[1];
+                    $typeArr[] = $key;
                 }
+
+                $usedFiltersIds[] = $key;
             }
 
             if (!empty($lawArr)) {
@@ -57,6 +71,23 @@ class TenderService
             }
             if (!empty($typeArr)) {
                 $tenderInfo = $tenderInfo->whereIn('type_of_select', $typeArr);
+            }
+
+//            dd($catalogType);
+            if ($catalogType !== 'all') {
+                if ($searchBox['priority'] !== 'all') {
+                    $tenderInfo = $tenderInfo->where('p.id', (int)$searchBox['priority']);
+                    $usedStagePriorityArr[] = PriorityModel::where('id', (int)$searchBox['priority'])
+                        ->pluck('name')
+                        ->toArray()[0];
+                }
+                if ($searchBox['stage'] !== 'all') {
+                    $tenderInfo = $tenderInfo->where('ws.id', (int)$searchBox['stage']);
+                    $usedStagePriorityArr[] = WorkStageModel::where('id', (int)$searchBox['stage'])
+                        ->pluck('name')
+                        ->toArray()[0];
+//                dd($usedStagePriorityArr);
+                }
             }
         }
 
@@ -77,12 +108,20 @@ class TenderService
         }
 
         $usedFilters = Filter::query()
-            ->whereIn('fid', array_slice(array_keys($searchBox), 2))
+            ->whereIn('fid', $usedFiltersIds)
             ->pluck('name')
             ->toArray();
+        $usedFilters = array_merge($usedFilters, $usedStagePriorityArr);
 
-        $categories = Category::query()->get()->sortBy('cid')->toArray();
-        $filters = $this->selectFilter()->get()->sortBy('fid')->toArray();
+        $categories = Category::query()
+            ->get()
+            ->sortBy('cid')
+            ->toArray();
+        $filters = $this
+            ->selectFilter()
+            ->get()
+            ->sortBy('fid')
+            ->toArray();
 
         return view('search.catalog',
             compact(

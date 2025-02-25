@@ -2,9 +2,9 @@
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\DB;
 
-    $priority = DB::table('priority')->where('user_id', Auth::id())->pluck('name');
-    $stage = DB::table('work_stage')->where('user_id', Auth::id())->pluck('name');
-    $favArray = ['Приоритет' => $priority, 'Этап работ' => $stage];
+    $priority = DB::table('priority')->where('user_id', Auth::id())->select('id', 'name', 'color_code')->get()->toArray();
+    $stage = DB::table('work_stage')->where('user_id', Auth::id())->select('id', 'name')->get()->toArray();
+    $favArray = ['Приоритет' => ['id' => 'priority', 'value' => $priority], 'Этап работ' => ['id' => 'stage', 'value' => $stage]];
 @endphp
 
     <!DOCTYPE html>
@@ -95,7 +95,7 @@
                                                                         @if($value['cid'] === $category['cid'])
                                                                             @if($num < 6)
                                                                                 <li>
-                                                                                    <a href="http://{{$_SERVER['HTTP_HOST']}}/catalog?{{$value['fid']}}={{$category['cid']}}-{{$value['fid']}}">{{$value['name']}}</a>
+                                                                                    <a href="http://{{$_SERVER['HTTP_HOST']}}/catalog?{{$value['fid']}}={{$category['cid']}}">{{$value['name']}}</a>
                                                                                 </li>
                                                                                 @php
                                                                                     $num += 1
@@ -117,9 +117,13 @@
                                                             <li>
                                                                 <span class="title">{{$key}}</span>
                                                                 <ul>
-                                                                    @foreach($cat as $elem)
+                                                                    @foreach($cat['value'] as $elem)
                                                                         <li>
-                                                                            <a href="#">{{$elem}}</a>
+                                                                            @if($key === 'Приоритет')
+                                                                                <a href="http://{{$_SERVER['HTTP_HOST']}}/favourite-catalog?{{$cat['id']}}={{$elem->id}}&stage=all">{{$elem->name}}</a>
+                                                                            @else
+                                                                                <a href="http://{{$_SERVER['HTTP_HOST']}}/favourite-catalog?priority=all&{{$cat['id']}}={{$elem->id}}">{{$elem->name}}</a>
+                                                                            @endif
                                                                         </li>
                                                                     @endforeach
                                                                 </ul>

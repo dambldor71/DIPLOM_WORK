@@ -53,13 +53,14 @@
                             </button>
                         </div>
                         <div class="sidebar-area style-2">
+{{--                            @dd($favArray)--}}
                             @if($title === 'Избранное')
                                 @foreach($favArray as $key => $cat)
                                     <div class="widgets-area mb-9">
                                         <h2 class="widgets-title mb-5">{{$key}}</h2>
                                         <div class="widget-item">
                                             <label class="label-checkbox mb-0" for="{{$cat['id']}}"></label>
-                                            <select id='{{$cat['id']}}' name='{{$cat['id']}}' class="dropdown-menu dropdown-menu-end">
+                                            <select id='{{$cat['id']}}' name='{{$cat['id']}}' class="nice-select wide border-bottom-0 rounded-0">
                                                 <option value="all">Любой</option>
                                                 @foreach($cat['value'] as $elem)
                                                     <option value="{{$elem->id}}">{{$elem->name}}</option>
@@ -85,9 +86,9 @@
                                                 @if($value['cid'] === $category['cid'])
                                                     <li>
                                                         @if(in_array($value['name'], $usedFilters) === true)
-                                                            <input name='{{$value['fid']}}' value='{{$value['cid'] . '-' . $value['fid']}}' class="input-checkbox" type="checkbox" id="color-selection-{{$value['fid']}}" checked>
+                                                            <input name='{{$value['fid']}}' value='{{$value['cid']}}' class="input-checkbox" type="checkbox" id="color-selection-{{$value['fid']}}" checked>
                                                         @else
-                                                            <input name='{{$value['fid']}}' value='{{$value['cid'] . '-' . $value['fid']}}' class="input-checkbox" type="checkbox" id="color-selection-{{$value['fid']}}">
+                                                            <input name='{{$value['fid']}}' value='{{$value['cid']}}' class="input-checkbox" type="checkbox" id="color-selection-{{$value['fid']}}">
                                                         @endif
                                                         <label class="label-checkbox mb-0" for="color-selection-{{$value['fid']}}">{{$value['name']}}
                                                         </label>

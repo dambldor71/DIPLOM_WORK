@@ -11,7 +11,8 @@ class FavouriteTenderController extends Controller
     public function index(TenderService $service, Request $request)
     {
         $tenderInfo = Tender::select('tenders.id', 'tender_code', 'price', 'link', 'description',
-            'customer', 'start_date', 'update_date', 'end_date', 'source_link', 'ft.user_id', 'p.name', 'p.color_code', 'ws.name as stageName')
+            'customer', 'start_date', 'update_date', 'end_date', 'source_link', 'ft.user_id',
+            'p.id as priorityId', 'p.name', 'p.color_code', 'ws.id as stageId', 'ws.name as stageName')
             ->rightJoin('favourite_tenders as ft' , 'ft.tender_id', '=', 'tenders.id')
             ->where('ft.user_id', $request->user()->id)
             ->leftJoin('priority_tender as pt', 'pt.tender_id', '=', 'ft.id')
