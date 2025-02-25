@@ -33,7 +33,9 @@ Route::prefix('/catalog')->controller(TenderController::class)->group(function (
 });
 
 
-Route::post('/set-priority', [ChosenTenderController::class, 'addFavouriteTender']);
+Route::post('/favourite-add', [ChosenTenderController::class, 'addFavouriteTender']);
+Route::post('/favourite-delete', [ChosenTenderController::class, 'removeFavouriteTender']);
+Route::post('/favourite-stage', [ChosenTenderController::class, 'addStageTender']);
 
 Route::get('/favourite-catalog', [FavouriteTenderController::class, 'index'])->name('favourite');
 Route::get('/favourite-catalog/{id}', [FavouriteTenderController::class, 'show'])->name('favourite-tender');

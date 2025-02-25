@@ -170,6 +170,6 @@
     <script>
         var userId = {{Auth::id()}};
     </script>
-    <script src="{{asset('js/chosenTender.js')}}" defer></script>
+    <script src="{{asset('js/updateFavouriteTender.js')}}" defer></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @endsection

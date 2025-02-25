@@ -2,14 +2,15 @@
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\DB;
 
-    $priority = DB::table('priority')->where('user_id', Auth::id())->pluck('name');
-    $stage = DB::table('work_stage')->where('user_id', Auth::id())->pluck('name');
-    $favArray = ['Приоритет' => $priority, 'Этап работ' => $stage];
+    $priority = DB::table('priority')->where('user_id', Auth::id())->select('id', 'name', 'color_code')->get()->toArray();
+    $stage = DB::table('work_stage')->where('user_id', Auth::id())->select('id', 'name')->get()->toArray();
+    $favArray = ['Приоритет' => ['id' => 'priority', 'value' => $priority], 'Этап работ' => ['id' => 'stage', 'value' => $stage]];
     $favTenders = DB::table('favourite_tenders')->pluck('tender_id')->toArray();
 @endphp
 @extends('header')
 
 @section('content')
+{{--    @dd($stage);--}}
     <div class="breadcrumb-area breadcrumb-height" data-bg-image="{{ asset('myPublic/assets/images/background-img/1920400.png')}}">
         <div class="container h-100">
             <div class="row h-100">
@@ -54,16 +55,16 @@
                         <div class="sidebar-area style-2">
                             @if($title === 'Избранное')
                                 @foreach($favArray as $key => $cat)
-                                    <div class="widgets-area">
+                                    <div class="widgets-area mb-9">
                                         <h2 class="widgets-title mb-5">{{$key}}</h2>
                                         <div class="widget-item">
-                                            <ul class="widgets-tags">
-                                                @foreach($cat as $elem)
-                                                    <li>
-                                                        <a href="#">{{$elem}}</a>
-                                                    </li>
+                                            <label class="label-checkbox mb-0" for="{{$cat['id']}}"></label>
+                                            <select id='{{$cat['id']}}' name='{{$cat['id']}}' class="dropdown-menu dropdown-menu-end">
+                                                <option value="all">Любой</option>
+                                                @foreach($cat['value'] as $elem)
+                                                    <option value="{{$elem->id}}">{{$elem->name}}</option>
                                                 @endforeach
-                                            </ul>
+                                            </select>
                                         </div>
                                     </div>
                                 @endforeach
@@ -147,31 +148,47 @@
                                     <div class="col-12">
                                         <div class="product-list-item">
                                             <div class="product-list-content">
-                                            <a class="product-name pb-2" href="{{route('tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
+                                                <a class="product-name pb-2" href="{{route('tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
                                                 <div class="price-box pb-1">
                                                     <span class="new-price" style="color: #2F4C73">{{$oneTender['price']}} ₽</span>
                                                 </div>
                                                 <div>{{$oneTender['description']}}</div>
                                                 <p class="short-desc mb-0" style="color: #2F4C73">{{$oneTender['customer']}}</p>
                                             </div>
-                                            <li class="dropdown d-none d-lg-block">
+                                            <ul class="dropdown d-none d-lg-block">
                                                 @if($title === 'Избранное')
-                                                    <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: {{$oneTender['color_code']}};text-align: center" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                    <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: {{$oneTender['color_code']}};text-align: center; margin-top: 12px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
                                                         {{$oneTender['name']}}
                                                     </button>
                                                 @else
-                                                    <button style="font-size: 20px; color: #2F4C73" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
-                                                        {{in_array($oneTender['id'], $favTenders) ? '🟢' : '⚪'}}
+                                                    <button style="font-size: 20px; color: #2F4C73; margin-top: 12px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                        <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], $favTenders) ? "add2" : "not-add2"}}.png" alt="q">
                                                     </button>
                                                 @endif
-                                                <ul class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="settingButton">
-                                                    @foreach(DB::table('priority')->where('user_id', Auth::id())->get() as $element)
+                                                <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="settingButton">
+                                                    @foreach($priority as $element)
                                                         <button id='{{$element->id}}' class="btn tender-status" style="color: white; background: {{$element->color_code}};text-align: center">
                                                             {{$element->name}}
                                                         </button>
                                                     @endforeach
-                                                </ul>
-                                            </li>
+                                                </li>
+                                                <br>
+                                                @if($title === 'Избранное')
+                                                    <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: #2F4C73;text-align: center; margin-top: 12px" type="button" id="stageButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                        {{$oneTender['stageName'] !== null ? $oneTender['stageName'] : 'Этап не выбран'}}
+                                                    </button>
+                                                    <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="stageButton">
+                                                        @foreach($stage as $element)
+                                                            <button id='{{$element->id}}' class="btn tender-stage">
+                                                                {{$element->name}}
+                                                            </button>
+                                                        @endforeach
+                                                    </li>
+                                                @endif
+                                            </ul>
+                                            @if($title === 'Избранное')
+                                                <span class="close-button position-absolute end-X" id="{{$oneTender['id']}}" title="Удалить из избранного">&times;</span>
+                                            @endif
                                         </div>
                                     </div>
                                     @endforeach
@@ -204,6 +221,7 @@
     <script>
         var userId = {{Auth::id()}};
     </script>
-    <script src="{{asset('js/chosenTender.js')}}" defer></script>
+    <script src="{{asset('js/updateFavouriteTender.js')}}" defer></script>
+    <script src="{{asset('js/deleteFavouriteTender.js')}}" defer></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @endsection

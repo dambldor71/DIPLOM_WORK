@@ -8059,6 +8059,10 @@ fieldset:disabled .btn {
   right: 50% !important;
 }
 
+.end-X {
+    right: 16% !important;
+}
+
 .end-100 {
   right: 100% !important;
 }
