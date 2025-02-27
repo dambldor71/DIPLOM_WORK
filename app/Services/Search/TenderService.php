@@ -54,14 +54,14 @@ class TenderService
                 }
 
                 if ($searchElement === '1') {
-                    $lawArr[] = $key;
+                    $lawArr[] = str_replace('f', '', $key);
                 } elseif ($searchElement === '2') {
-                    $stageArr[] = $key;
+                    $stageArr[] = str_replace('f', '', $key);
                 } else {
-                    $typeArr[] = $key;
+                    $typeArr[] = str_replace('f', '', $key);
                 }
 
-                $usedFiltersIds[] = $key;
+                $usedFiltersIds[] = str_replace('f', '', $key);
             }
 
             if (!empty($lawArr)) {
@@ -73,10 +73,12 @@ class TenderService
             if (!empty($typeArr)) {
                 $tenderInfo = $tenderInfo->whereIn('type_of_select', $typeArr);
             }
+            if (in_array('min-price', array_keys($searchBox))) {
+                $tenderInfo = $tenderInfo->where('price', '>', (float)$searchBox['min-price'])->where('price', '<', (float)$searchBox['max-price']);
+                $usedStagePriorityArr['min-price'] = $searchBox['min-price'];
+                $usedStagePriorityArr['max-price'] = $searchBox['max-price'];
+            }
 
-            $tenderInfo = $tenderInfo->where('price', '>', (float)$searchBox['min-price'])->where('price', '<', (float)$searchBox['max-price']);
-            $usedStagePriorityArr['min-price'] = $searchBox['min-price'];
-            $usedStagePriorityArr['max-price'] = $searchBox['max-price'];
 
             if ($catalogType !== 'all') {
                 if ($searchBox['priority'] !== 'all') {
@@ -105,7 +107,9 @@ class TenderService
 
         if (count($tenderInfo->get()) > 10) {
             $links += 1;
+//            dd($tenderInfo, $tenderInfo->paginate(10), $tenderInfo->paginate(10)->withQueryString(), $tenderInfo->paginate(10)->withQueryString()->links());
             $tenderInfo = $tenderInfo->paginate(10)->withQueryString();
+//            dd($tenderInfo);
         } else {
             $tenderInfo = $tenderInfo->get();
         }

@@ -79,10 +79,10 @@
                                 <h2 class="widgets-title mb-5">Цена</h2>
                                 <div class="widgets-item">
                                     <label for="min-price">Минимальная цена:</label>
-                                    <input name="min-price" type="text" id="min-price" value="{{!empty($usedFilters) ? $usedFilters['min-price'] : 0}}">
+                                    <input class="form-control" name="min-price" type="text" id="min-price" value="{{in_array('min-price', array_keys($usedFilters)) ? $usedFilters['min-price'] : 0}}">
 
                                     <label for="max-price">Максимальная цена:</label>
-                                    <input name="max-price" type="text" id="max-price" value="{{!empty($usedFilters) ? $usedFilters['max-price'] : Tender::pluck('price')->max()}}">
+                                    <input class="form-control" name="max-price" type="text" id="max-price" value="{{in_array('max-price', array_keys($usedFilters)) ? $usedFilters['max-price'] : Tender::pluck('price')->max()}}">
                                 </div>
                             </div>
                             @foreach($categories as $category)
@@ -95,9 +95,9 @@
                                                 @if($value['cid'] === $category['cid'])
                                                     <li>
                                                         @if(in_array($value['name'], $usedFilters) === true)
-                                                            <input name='{{$value['fid']}}' value='{{$value['cid']}}' class="input-checkbox" type="checkbox" id="color-selection-{{$value['fid']}}" checked>
+                                                            <input name='{{$value['fid']}}f' value='{{$value['cid']}}' class="input-checkbox" type="checkbox" id="color-selection-{{$value['fid']}}" checked>
                                                         @else
-                                                            <input name='{{$value['fid']}}' value='{{$value['cid']}}' class="input-checkbox" type="checkbox" id="color-selection-{{$value['fid']}}">
+                                                            <input name='{{$value['fid']}}f' value='{{$value['cid']}}' class="input-checkbox" type="checkbox" id="color-selection-{{$value['fid']}}">
                                                         @endif
                                                         <label class="label-checkbox mb-0" for="color-selection-{{$value['fid']}}">{{$value['name']}}
                                                         </label>
@@ -227,6 +227,7 @@
                             <ul class="pagination justify-content-end">
                                 @if($links >= 1)
                                     @foreach($tenderInfo->links()->elements as $element)
+{{--                                        @dd($tenderInfo->links()->elements)--}}
                                         @if($element === '...')
                                             <li class="page-item active" style="vertical-align: bottom">...</li>
                                         @else

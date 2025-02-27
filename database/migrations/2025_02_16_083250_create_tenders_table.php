@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('update_date');
             $table->string('end_date')->value('00.00.0000');
             $table->string('source_link');
+            $table->timestamps('updated_at');
         });
     }
 
