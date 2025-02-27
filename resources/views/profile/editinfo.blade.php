@@ -3,8 +3,9 @@
     use App\Models\WorkStageModel;
     use Illuminate\Support\Facades\Auth;
 
-    $priorities = PriorityModel::select('id', 'name')->where('user_id', Auth::id())->get()->toArray();
-    $workStage = WorkStageModel::select('id', 'name')->where('user_id', Auth::id())->get()->toArray();
+    $priorities = PriorityModel::query()->where('user_id', Auth::id())->select('id', 'name', 'color_code')->get()->toArray();
+    $workStage = WorkStageModel::query()->where('user_id', Auth::id())->select('id', 'name')->get()->toArray();
+    $favArray = ['Приоритет' => ['id' => 'priority', 'value' => $priorities], 'Этап работ' => ['id' => 'stage', 'value' => $workStage]];
 @endphp
 
 @extends('header')
@@ -121,23 +122,28 @@
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <td>Всего тендеров в избранном</td>
-                                                <td>count</td>
-                                                <td><a href="#" class="btn btn-primary btn-sm">Перейти</a></td>
+                                                <td>Всего тендеров в Избранном</td>
+                                                <td>{{\App\Models\FavouriteTenderModel::query()->count()}}</td>
+                                                <td><a href="{{route('favourite')}}" class="btn btn-primary btn-sm">Перейти</a></td>
                                             </tr>
-                                            @foreach($priorities as $priority)
-                                                <tr>
-                                                    <td>Всего тендеров с приоритетом {{$priority['name']}}</td>
-                                                    <td>count</td>
-                                                    <td><a href="#" class="btn btn-primary btn-sm">Перейти</a></td>
-                                                </tr>
-                                            @endforeach
-                                            @foreach($workStage as $stage)
-                                                <tr>
-                                                    <td>Всего тендеров на этапе работ {{$stage['name']}}</td>
-                                                    <td>count</td>
-                                                    <td><a href="#" class="btn btn-primary btn-sm">Перейти</a></td>
-                                                </tr>
+                                            @foreach($favArray as $key => $cat)
+                                                @foreach($cat['value'] as $elem)
+                                                    <tr>
+                                                        <td>Всего тендеров с приоритетом &#39;{{$elem['name']}}&#39;</td>
+                                                        @if($key === 'Приоритет')
+                                                            <td>{{\App\Models\PriorityTenderModel::where('priority_id', $elem['id'])->count()}}</td>
+                                                        @else
+                                                            <td>{{\App\Models\WorkStageTendersModel::where('stage_id', $elem['id'])->count()}}</td>
+                                                        @endif
+                                                        <td>
+                                                            @if($key === 'Приоритет')
+                                                                <a href="http://{{$_SERVER['HTTP_HOST']}}/favourite-catalog?{{$cat['id']}}={{$elem['id']}}&stage=all" class="btn btn-primary btn-sm">Перейти</a>
+                                                            @else
+                                                                <a href="http://{{$_SERVER['HTTP_HOST']}}/favourite-catalog?priority=all&{{$cat['id']}}={{$elem['id']}}" class="btn btn-primary btn-sm">Перейти</a>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
                                             @endforeach
                                             </tbody>
                                         </table>

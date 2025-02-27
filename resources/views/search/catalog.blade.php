@@ -1,6 +1,7 @@
 @php
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\DB;
+    use App\Models\Tender;
 
     $priority = DB::table('priority')->where('user_id', Auth::id())->select('id', 'name', 'color_code')->get()->toArray();
     $stage = DB::table('work_stage')->where('user_id', Auth::id())->select('id', 'name')->get()->toArray();
@@ -63,7 +64,11 @@
                                             <select id='{{$cat['id']}}' name='{{$cat['id']}}' class="nice-select wide border-bottom-0 rounded-0">
                                                 <option value="all">Любой</option>
                                                 @foreach($cat['value'] as $elem)
-                                                    <option value="{{$elem->id}}">{{$elem->name}}</option>
+                                                    @if(in_array($elem->name, $usedFilters) === true)
+                                                        <option value="{{$elem->id}}" selected>{{$elem->name}}</option>
+                                                    @else
+                                                        <option value="{{$elem->id}}">{{$elem->name}}</option>
+                                                    @endif
                                                 @endforeach
                                             </select>
                                         </div>
@@ -72,8 +77,12 @@
                             @endif
                             <div class="widgets-area widgets-filter mb-9">
                                 <h2 class="widgets-title mb-5">Цена</h2>
-                                <div class="price-filter">
-                                    <input type="text" class="tromic-range-slider" name="price" data-type="double" data-min="0" data-from="0" data-to="10000000" data-max="10000000" data-grid="false" />
+                                <div class="widgets-item">
+                                    <label for="min-price">Минимальная цена:</label>
+                                    <input name="min-price" type="text" id="min-price" value="{{!empty($usedFilters) ? $usedFilters['min-price'] : 0}}">
+
+                                    <label for="max-price">Максимальная цена:</label>
+                                    <input name="max-price" type="text" id="max-price" value="{{!empty($usedFilters) ? $usedFilters['max-price'] : Tender::pluck('price')->max()}}">
                                 </div>
                             </div>
                             @foreach($categories as $category)

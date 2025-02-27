@@ -37,6 +37,7 @@ class TenderService
     public function showAll($tenderInformatrion, $searchBox, $catalogType = 'all')
     {
         $tenderInfo = $tenderInformatrion;
+//        dd($searchBox);
 //        dd($tenderInformatrion->get()->toArray(), $searchBox);
         $usedStagePriorityArr = [];
         $usedFiltersIds = [];
@@ -47,7 +48,7 @@ class TenderService
             $typeArr = [];
 
             foreach ($searchBox as $key => $searchElement) {
-                $notNums = ['searchString', 'page', 'price', 'priority', 'stage'];
+                $notNums = ['searchString', 'page', 'min-price', 'max-price', 'priority', 'stage'];
                 if (in_array($key, $notNums)) {
                     continue;
                 }
@@ -73,7 +74,10 @@ class TenderService
                 $tenderInfo = $tenderInfo->whereIn('type_of_select', $typeArr);
             }
 
-//            dd($catalogType);
+            $tenderInfo = $tenderInfo->where('price', '>', (float)$searchBox['min-price'])->where('price', '<', (float)$searchBox['max-price']);
+            $usedStagePriorityArr['min-price'] = $searchBox['min-price'];
+            $usedStagePriorityArr['max-price'] = $searchBox['max-price'];
+
             if ($catalogType !== 'all') {
                 if ($searchBox['priority'] !== 'all') {
                     $tenderInfo = $tenderInfo->where('p.id', (int)$searchBox['priority']);
@@ -86,7 +90,6 @@ class TenderService
                     $usedStagePriorityArr[] = WorkStageModel::where('id', (int)$searchBox['stage'])
                         ->pluck('name')
                         ->toArray()[0];
-//                dd($usedStagePriorityArr);
                 }
             }
         }
