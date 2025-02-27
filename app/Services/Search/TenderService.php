@@ -110,6 +110,7 @@ class TenderService
             $tenderInfo = $tenderInfo->get();
         }
 
+//        dd($tenderInfo);
         $usedFilters = Filter::query()
             ->whereIn('fid', $usedFiltersIds)
             ->pluck('name')
@@ -157,4 +158,18 @@ class TenderService
             }
         }
     }
+
+//    function sorting($tenderInfo): array
+//    {
+//        $links = 0;
+//
+//        if (count($tenderInfo->get()) > 10) {
+//            $links += 1;
+//            $tenderInfo = $tenderInfo->paginate(10)->withQueryString();
+//        } else {
+//            $tenderInfo = $tenderInfo->get();
+//        }
+//
+//        return [$tenderInfo, $links];
+//    }
 }

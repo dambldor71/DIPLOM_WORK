@@ -115,6 +115,23 @@
                     </form>
                 </div>
                 <div class="col-xl-9 col-lg-8 order-lg-2 order-1">
+                    <div class="product-topbar">
+                        <ul>
+                            <li class="product-view-wrap">
+                            </li>
+                            <li class="product-view-wrap">
+                            </li>
+                            <li class="short">
+                                <select class="nice-select rounded-0">
+                                    <option value="1">Сортировка по умолчанию</option>
+                                    <option value="2">По возрастанию цены</option>
+                                    <option value="3">По убыванию цены</option>
+                                    <option value="4">По дате окончания</option>
+                                    <option value="5">По номеру тендера</option>
+                                </select>
+                            </li>
+                        </ul>
+                    </div>
                     <div class="tab-content text-charcoal pt-8">
                         <div class="tab-pane fade" id="grid-view" role="tabpanel" aria-labelledby="grid-view-tab">
                             <div class="product-grid-view row">

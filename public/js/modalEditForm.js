@@ -54,4 +54,5 @@ profileForm.addEventListener('submit', function (event) {
     });
 
     profileModal.style.display = 'none';
+    location.reload(true);
 });
