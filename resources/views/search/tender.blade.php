@@ -1,3 +1,12 @@
+@php
+    use Illuminate\Support\Facades\Auth;
+    use Illuminate\Support\Facades\DB;
+
+    $priority = DB::table('priority')->where('user_id', Auth::id())->select('id', 'name', 'color_code')->get()->toArray();
+    $stage = DB::table('work_stage')->where('user_id', Auth::id())->select('id', 'name')->get()->toArray();
+    $favArray = ['Приоритет' => ['id' => 'priority', 'value' => $priority], 'Этап работ' => ['id' => 'stage', 'value' => $stage]];
+    $favTenders = DB::table('favourite_tenders')->pluck('tender_id')->toArray();
+@endphp
 @extends('header')
 
 @section('content')
@@ -8,6 +17,9 @@
                 <div class="col-lg-12">
                     <div class="breadcrumb-item text-night-rider">
                         <h2 class="breadcrumb-heading">Подробная информация о тендере</h2>
+                        @if($title !== '')
+                            <h3 class="breadcrumb-heading">Избранное</h3>
+                        @endif
                         <ul>
                             <li>
                                 <a href="{{route('mainpage')}}">На главную</a>
@@ -63,6 +75,27 @@
                         </div>
                     </div>
                 </div>
+                <ul class="dropdown d-none d-lg-block position-absolute end-60">
+{{--                    @dd($oneTenderInfo)--}}
+{{--                    @dd($favTenders, $oneTenderInfo['id'])--}}
+                    @if(in_array($oneTenderInfo['id'], $favTenders))
+                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="font-size: 24px; color: white; background: {{$oneTenderInfo['color_code']}};text-align: center; margin-top: 12px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                            {{$oneTenderInfo['name']}}
+                        </button>
+                    @else
+                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="font-size: 24px; color: white; background: #2F4C73;text-align: center; margin-top: 12px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                            Не в избранном
+                        </button>
+                    @endif
+{{--                    @dd($priority)--}}
+                    <li class="dropdown-menu dropdown-menu-end" id="{{$oneTenderInfo['id']}}" aria-labelledby="settingButton">
+                        @foreach($priority as $element)
+                            <button id='{{$element->id}}' class="btn tender-status" style="color: white; background: {{$element->color_code}};text-align: center">
+                                {{$element->name}}
+                            </button>
+                        @endforeach
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -129,5 +162,10 @@
             </div>
         </div>
     </div>
-
+{{--    @dd($oneTenderInfo)--}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>
+        var userId = {{Auth::id()}};
+    </script>
+    <script src="{{asset('js/updateFavouriteTender.js')}}" defer></script>
 @endsection

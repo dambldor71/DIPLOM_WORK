@@ -20,14 +20,20 @@ $(document).ready(function (){
             },
             success:function(response)
             {
-                alert("Тендер добавлен");
+                alert('Тендер добавлен в избранное.');
             },
             error: function(response) {
                 console.log(response)
             }
         });
 
-        location.reload(true);
+        const locationPathName = (window.location.pathname).split('/');
+        
+        if (locationPathName[1] === 'catalog' && locationPathName.length === 3) {
+            window.location.href = 'http://127.0.0.1:8000/favourite-catalog/' + locationPathName[2];
+        } else {
+            location.reload(true);
+        }
     })
 
     $('.tender-stage').click(function () {

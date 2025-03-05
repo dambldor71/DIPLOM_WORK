@@ -1,6 +1,7 @@
 @php
     use App\Models\PriorityModel;
     use App\Models\WorkStageModel;
+    use App\Models\TelegramModel;
     use Illuminate\Support\Facades\Auth;
 
     $priorities = PriorityModel::query()->where('user_id', Auth::id())->select('id', 'name', 'color_code')->get()->toArray();
@@ -52,10 +53,6 @@
                                     <input type="date" placeholder="{{$userInfo[0]['birthday']}}" value="{{$userInfo[0]['birthday']}}" id="user-birthday" name="user-birthday" class="form-control"><br>
                                     <label for="user-phone">Номер телефона:</label>
                                     <input type="text" placeholder="{{$userInfo[0]['phone']}}" value="{{$userInfo[0]['phone']}}" id="user-phone" name="user-phone" class="form-control"><br>
-                                    <label for="user-profession">Должность:</label>
-                                    <input type="text" id="user-profession" name="user-profession" class="form-control"><br><br>
-                                    <label for="user-telegram">Telegram:</label>
-                                    <input type="text" placeholder="{{$userInfo[0]['telegram']}}" value="{{$userInfo[0]['telegram']}}" id="user-telegram" name="user-telegram" class="form-control"><br><br>
                                     <x-primary-button type="submit" class="btn btn-custom-size lg-size btn-primary">
                                         {{ __('Сохранить') }}
                                     </x-primary-button>
@@ -94,12 +91,14 @@
                 <h5 class="short-desc mb-4">{{$userInfo[0]['name'] . ' ' . $userInfo[0]['surname']}}</h5>
                 <h4 style="color: #2F4C73" class="title">Номер телефона:</h4>
                 <h5 class="short-desc mb-4">{{$userInfo[0]['phone']}}</h5>
-                <h4 style="color: #2F4C73" class="title">Должность:</h4>
-                <h5 class="short-desc mb-4"></h5>
                 <h4 style="color: #2F4C73" class="title">Дата рождения:</h4>
                 <h5 class="short-desc mb-4">{{$userInfo[0]['birthday']}}</h5>
                 <h4 style="color: #2F4C73" class="title">Telegram:</h4>
-                <h5 class="short-desc mb-4">{{$userInfo[0]['telegram']}}</h5>
+                @if(TelegramModel::select('id')->where('user_id', Auth::id())->count())
+                    <h5 class="short-desc mb-4"> {{'@' . TelegramModel::where('user_id', Auth::id())->pluck('telegram_id')[0]}}</h5>
+                @else
+                    <a class="short-desc mb-4" href="https://t.me/PumoriTenderBot">Привязать аккаунт Telegram</a>
+                @endif
             </div>
         </div>
         <div class="tab-pane fade" id="statistics" role="tabpanel"
@@ -123,7 +122,7 @@
                                             <tbody>
                                             <tr>
                                                 <td>Всего тендеров в Избранном</td>
-                                                <td>{{\App\Models\FavouriteTenderModel::query()->count()}}</td>
+                                                <td>{{\App\Models\FavouriteTenderModel::where('user_id', Auth::id())->count()}}</td>
                                                 <td><a href="{{route('favourite')}}" class="btn btn-primary btn-sm">Перейти</a></td>
                                             </tr>
                                             @foreach($favArray as $key => $cat)
@@ -131,9 +130,9 @@
                                                     <tr>
                                                         <td>Всего тендеров с приоритетом &#39;{{$elem['name']}}&#39;</td>
                                                         @if($key === 'Приоритет')
-                                                            <td>{{\App\Models\PriorityTenderModel::where('priority_id', $elem['id'])->count()}}</td>
+                                                            <td>{{\App\Models\PriorityTenderModel::where('priority_id', $elem['id'])->leftJoin('favourite_tenders as ft', 'ft.id', '=', 'priority_tender.tender_id')->where('user_id', Auth::id())->count()}}</td>
                                                         @else
-                                                            <td>{{\App\Models\WorkStageTendersModel::where('stage_id', $elem['id'])->count()}}</td>
+                                                            <td>{{\App\Models\WorkStageTendersModel::where('stage_id', $elem['id'])->leftJoin('favourite_tenders as ft', 'ft.id', '=', 'priority_tender.tender_id')->where('user_id', Auth::id())->count()}}</td>
                                                         @endif
                                                         <td>
                                                             @if($key === 'Приоритет')

@@ -13,24 +13,52 @@ use Illuminate\Database\Eloquent\Builder;
 
 class TenderService
 {
-    public function showOne($id)
+    public function showOne($tenderInfo, $request, $id, $catalogType = 'all')
     {
-        $categories = Category::query()->get()->toArray();
-        $filters = $this->selectFilter()->get()->toArray();
-
-        $oneTenderInfo = Tender::select(
-            'id', 'tender_code', 'price', 'link', 'description',
-            'customer', 'law', 'purchase_stage', 'type_of_select',
-            'start_date', 'update_date', 'end_date', 'source_link')
-            ->where('id', $id)
+        $oneTenderInfo = $tenderInfo
+            ->where('tenders.id', $id)
             ->get()
             ->toArray()[0];
+//        dd($oneTenderInfo);
+//        if ($catalogType === 'all') {
+//            $oneTenderInfo = Tender::select('tenders.id', 'tender_code', 'price', 'link', 'description',
+//                'law', 'purchase_stage', 'type_of_select',
+//                'customer', 'start_date', 'update_date', 'end_date', 'source_link', 'ft.user_id',
+//                'p.id as priorityId', 'p.name', 'p.color_code', 'ws.id as stageId', 'ws.name as stageName')
+//                ->rightJoin('favourite_tenders as ft' , 'ft.tender_id', '=', 'tenders.id')
+//                ->where('ft.user_id', $request->user()->id)
+//                ->leftJoin('priority_tender as pt', 'pt.tender_id', '=', 'ft.id')
+//                ->leftJoin('priority as p', 'p.id', '=', 'pt.priority_id')
+//                ->leftJoin('work_stage_tenders as wst', 'wst.favourite_id', '=', 'ft.id')
+//                ->leftJoin('work_stage as ws', 'ws.id', '=', 'wst.stage_id')
+//                ->where('tenders.id', $id)
+//                ->get()
+//                ->toArray();
+//        } else {
+//            $oneTenderInfo = Tender::select('tenders.id', 'tender_code', 'price', 'link', 'description',
+//                'law', 'purchase_stage', 'type_of_select',
+//                'customer', 'start_date', 'update_date', 'end_date', 'source_link', 'ft.user_id',
+//                'p.id as priorityId', 'p.name', 'p.color_code', 'ws.id as stageId', 'ws.name as stageName')
+//                ->rightJoin('favourite_tenders as ft' , 'ft.tender_id', '=', 'tenders.id')
+//                ->where('ft.user_id', $request->user()->id)
+//                ->leftJoin('priority_tender as pt', 'pt.tender_id', '=', 'ft.id')
+//                ->leftJoin('priority as p', 'p.id', '=', 'pt.priority_id')
+//                ->leftJoin('work_stage_tenders as wst', 'wst.favourite_id', '=', 'ft.id')
+//                ->leftJoin('work_stage as ws', 'ws.id', '=', 'wst.stage_id')
+//                ->where('tenders.id', $id)
+//                ->get()
+//                ->toArray();
+//        }
+
+        $categories = Category::query()->get()->toArray();
+        $filters = $this->selectFilter()->get()->toArray();
+        $title = $catalogType === 'all' ? '' : 'Избранное';
+
         $tenderFilters = $this->selectFilter()
             ->whereIn('fid', [$oneTenderInfo['law'], $oneTenderInfo['purchase_stage'], $oneTenderInfo['type_of_select']])
             ->pluck('name')->toArray();
-
         return view('search.tender', compact(
-            'oneTenderInfo', 'tenderFilters', 'categories', 'filters'
+            'oneTenderInfo', 'tenderFilters', 'categories', 'filters', 'title'
         ));
     }
 
@@ -39,7 +67,7 @@ class TenderService
         $tenderInfo = $tenderInformatrion;
 //        dd($searchBox);
 //        dd($tenderInformatrion->get()->toArray(), $searchBox);
-        $usedStagePriorityArr = [];
+        $usedFiltersPart = [];
         $usedFiltersIds = [];
 
         if (!empty($searchBox)) {
@@ -64,6 +92,10 @@ class TenderService
                 $usedFiltersIds[] = str_replace('f', '', $key);
             }
 
+            if(!empty($searchBox['searchString'])) {
+                $tenderInfo = $tenderInfo->whereLike('description', '%' . $searchBox['searchString'] . '%');
+                $usedFiltersPart['searchString'] = $searchBox['searchString'];
+            }
             if (!empty($lawArr)) {
                 $tenderInfo = $tenderInfo->whereIn('law', $lawArr);
             }
@@ -74,24 +106,34 @@ class TenderService
                 $tenderInfo = $tenderInfo->whereIn('type_of_select', $typeArr);
             }
             if (in_array('min-price', array_keys($searchBox))) {
+                if ($searchBox['min-price'] === null) {
+                    $searchBox['min-price'] = 0;
+                }
+                if ($searchBox['max-price'] === null) {
+                    $searchBox['max-price'] = Tender::pluck('price')->max();
+                }
                 $tenderInfo = $tenderInfo->where('price', '>', (float)$searchBox['min-price'])->where('price', '<', (float)$searchBox['max-price']);
-                $usedStagePriorityArr['min-price'] = $searchBox['min-price'];
-                $usedStagePriorityArr['max-price'] = $searchBox['max-price'];
+                $usedFiltersPart['min-price'] = $searchBox['min-price'];
+                $usedFiltersPart['max-price'] = $searchBox['max-price'];
             }
 
-
+//            dd($searchBox);
             if ($catalogType !== 'all') {
-                if ($searchBox['priority'] !== 'all') {
-                    $tenderInfo = $tenderInfo->where('p.id', (int)$searchBox['priority']);
-                    $usedStagePriorityArr[] = PriorityModel::where('id', (int)$searchBox['priority'])
-                        ->pluck('name')
-                        ->toArray()[0];
+                if (in_array('priority', array_keys($searchBox))) {
+                    if ($searchBox['priority'] !== 'all') {
+                        $tenderInfo = $tenderInfo->where('p.id', (int)$searchBox['priority']);
+                        $usedFiltersPart[] = PriorityModel::where('id', (int)$searchBox['priority'])
+                            ->pluck('name')
+                            ->toArray()[0];
+                    }
                 }
-                if ($searchBox['stage'] !== 'all') {
-                    $tenderInfo = $tenderInfo->where('ws.id', (int)$searchBox['stage']);
-                    $usedStagePriorityArr[] = WorkStageModel::where('id', (int)$searchBox['stage'])
-                        ->pluck('name')
-                        ->toArray()[0];
+                if (in_array('priority', array_keys($searchBox))) {
+                    if ($searchBox['stage'] !== 'all') {
+                        $tenderInfo = $tenderInfo->where('ws.id', (int)$searchBox['stage']);
+                        $usedFiltersPart[] = WorkStageModel::where('id', (int)$searchBox['stage'])
+                            ->pluck('name')
+                            ->toArray()[0];
+                    }
                 }
             }
         }
@@ -119,7 +161,7 @@ class TenderService
             ->whereIn('fid', $usedFiltersIds)
             ->pluck('name')
             ->toArray();
-        $usedFilters = array_merge($usedFilters, $usedStagePriorityArr);
+        $usedFilters = array_merge($usedFilters, $usedFiltersPart);
 
         $categories = Category::query()
             ->get()
@@ -130,6 +172,8 @@ class TenderService
             ->get()
             ->sortBy('fid')
             ->toArray();
+
+//        dd($tenderInfo);
 
         return view('search.catalog',
             compact(

@@ -6,7 +6,7 @@
     $priority = DB::table('priority')->where('user_id', Auth::id())->select('id', 'name', 'color_code')->get()->toArray();
     $stage = DB::table('work_stage')->where('user_id', Auth::id())->select('id', 'name')->get()->toArray();
     $favArray = ['Приоритет' => ['id' => 'priority', 'value' => $priority], 'Этап работ' => ['id' => 'stage', 'value' => $stage]];
-    $favTenders = DB::table('favourite_tenders')->pluck('tender_id')->toArray();
+    $favTenders = DB::table('favourite_tenders')->where('user_id', Auth::id())->pluck('tender_id')->toArray();
 @endphp
 @extends('header')
 
@@ -48,13 +48,16 @@
                 <div class="col-xl-3 col-lg-4 order-lg-1 order-2 pt-10 pt-lg-0">
                     <form action="{{$title === 'Избранное' ? route('favourite') : route('search')}}" method="GET">
                         <div class="widgets-searchbox widgets-area py-6 mb-9">
-                            <input name='searchString' class="input-field" type="search" placeholder="Ключевое слово">
+                            <input name='searchString' class="input-field" type="search" placeholder="Ключевое слово"
+                            @if(in_array('searchString', array_keys($usedFilters)))
+                                value="{{$usedFilters['searchString']}}"
+                            @endif
+                            >
                             <button class="widgets-searchbox-btn" type="submit">
                                 <i class="pe-7s-search"></i>
                             </button>
                         </div>
                         <div class="sidebar-area style-2">
-{{--                            @dd($favArray)--}}
                             @if($title === 'Избранное')
                                 @foreach($favArray as $key => $cat)
                                     <div class="widgets-area mb-9">
@@ -75,6 +78,7 @@
                                     </div>
                                 @endforeach
                             @endif
+{{--                            @dd($usedFilters)--}}
                             <div class="widgets-area widgets-filter mb-9">
                                 <h2 class="widgets-title mb-5">Цена</h2>
                                 <div class="widgets-item">
@@ -175,7 +179,7 @@
                                     <div class="col-12">
                                         <div class="product-list-item">
                                             <div class="product-list-content">
-                                                <a class="product-name pb-2" href="{{route('tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
+                                                <a class="product-name pb-2" href="{{route(in_array($oneTender['id'], $favTenders) ? 'favourite-tender' : 'tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
                                                 <div class="price-box pb-1">
                                                     <span class="new-price" style="color: #2F4C73">{{$oneTender['price']}} ₽</span>
                                                 </div>
@@ -199,6 +203,7 @@
                                                         </button>
                                                     @endforeach
                                                 </li>
+{{--                                                    @dd($oneTender)--}}
                                                 <br>
                                                 @if($title === 'Избранное')
                                                     <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: #2F4C73;text-align: center; margin-top: 12px" type="button" id="stageButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">

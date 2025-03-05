@@ -20,8 +20,13 @@ class TenderController extends Controller
         return $service->showAll($tenderInfo, $searchBox);
     }
 
-    public function show(TenderService $service, $id)
+    public function show(Request $request, TenderService $service, $id)
     {
-        return $service->showOne($id);
+        $tenderInfo = Tender::select('tenders.id', 'tender_code', 'price', 'link', 'description',
+            'law', 'purchase_stage', 'type_of_select',
+            'customer', 'start_date', 'update_date', 'end_date', 'source_link');
+
+//        dd($tenderInfo->get()->toArray());
+        return $service->showOne($tenderInfo, $request, $id);
     }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('tender_code')->unique();
             $table->text('description');
-            $table->string('link')->unique();
+            $table->text('link')->unique();
             $table->foreignId('law')->constrained('filters');
             $table->foreignId('purchase_stage')->constrained('filters');
             $table->foreignId('type_of_select')->constrained('filters');
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('start_date');
             $table->string('update_date');
             $table->string('end_date')->value('00.00.0000');
-            $table->string('source_link');
+            $table->text('source_link');
             $table->timestamps('updated_at');
         });
     }
