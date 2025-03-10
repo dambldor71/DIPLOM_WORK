@@ -48,7 +48,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button class="btn btn-custom-size lg-size btn-primary">{{ __('Сохранить') }}</x-primary-button>
+            <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">{{ __('Сохранить') }}</button>
 
             @if (session('status') === 'profile-updated')
                 <p

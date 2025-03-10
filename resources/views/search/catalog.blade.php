@@ -40,6 +40,11 @@
                     <a>{{$uFilter}}</a>
                 </li>
             @endforeach
+            @if(count($usedFilters))
+                <li>
+                    <a href="{{route($title === 'Избранное' ? 'favourite' : 'search')}}">Сбросить фильтры ✕</a>
+                </li>
+            @endif
         </ul>
     </div>
     <div class="shop-area section-space-y-axis-100">
@@ -114,14 +119,19 @@
                             @endforeach
                         </div>
                         <div class="button-wrap">
-                            <input class="btn btn-custom-size lg-size btn-primary" type="submit" value="Применить">
+                            <input class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" type="submit" value="Применить">
                         </div>
                     </form>
                 </div>
                 <div class="col-xl-9 col-lg-8 order-lg-2 order-1">
                     <div class="product-topbar">
                         <ul>
-                            <li class="product-view-wrap">
+                            <li>
+                                @if($title === 'Избранное')
+                                    <a style="border-radius: 20px; font-size: 12px" class="btn btn-custom-size lg-size btn-primary" href="{{route('export')}}">
+                                        Сформировать отчёт
+                                    </a>
+                                @endif
                             </li>
                             <li class="product-view-wrap">
                             </li>
@@ -193,7 +203,7 @@
                                                     </button>
                                                 @else
                                                     <button style="font-size: 20px; color: #2F4C73; margin-top: 12px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
-                                                        <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], $favTenders) ? "add2" : "not-add2"}}.png" alt="q">
+                                                        <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], $favTenders) ? "addZap2" : "addZap1"}}.png" alt="q">
                                                     </button>
                                                 @endif
                                                 <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="settingButton">

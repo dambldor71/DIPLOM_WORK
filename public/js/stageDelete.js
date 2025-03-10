@@ -17,10 +17,10 @@ formDeleteStage.addEventListener('submit', function(event) {
         },
         success:function(response)
         {
-            alert("Этап удалён");
+            alert("Этап удалён.");
         },
         error: function(response) {
-            console.log(response)
+            alert("Этап используется в избранных тендерах. Удаление невозможно.");
         }
     });
 

@@ -157,12 +157,17 @@
                                                     </button>
                                                     <ul class="dropdown-menu dropdown-menu-end"
                                                         aria-labelledby="settingButton">
-                                                        <x-dropdown-link :href="route('profile.edit')">
-                                                            {{ __('Смена данных') }}
-                                                        </x-dropdown-link>
-                                                        <x-dropdown-link :href="route('logout')">
-                                                            {{ __('Выйти') }}
-                                                        </x-dropdown-link>
+                                                        <li>
+                                                            <a href="{{route('profile.edit')}}">
+                                                                {{ __('Смена входных данных') }}
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="{{route('profile.edit')}}">
+                                                                {{ __('Выйти') }}
+                                                            </a>
+                                                        </li>
+
                                                     </ul>
                                                 </li>
                                             </ul>

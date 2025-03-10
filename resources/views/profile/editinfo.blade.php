@@ -37,7 +37,7 @@
                 </div>
                 <div class="col-md-8">
                     <h3 class="card-title">{{$userInfo[0]['name'] . ' ' . $userInfo[0]['surname']}}</h3>
-                    <button class="btn btn-custom-size lg-size btn-primary" id="openModalBtn">Редактировать</button>
+                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">Редактировать</button>
 
                     <div id="profileModal" class="modal">
                         <div class="modal-content">
@@ -53,9 +53,7 @@
                                     <input type="date" placeholder="{{$userInfo[0]['birthday']}}" value="{{$userInfo[0]['birthday']}}" id="user-birthday" name="user-birthday" class="form-control"><br>
                                     <label for="user-phone">Номер телефона:</label>
                                     <input type="text" placeholder="{{$userInfo[0]['phone']}}" value="{{$userInfo[0]['phone']}}" id="user-phone" name="user-phone" class="form-control"><br>
-                                    <x-primary-button type="submit" class="btn btn-custom-size lg-size btn-primary">
-                                        {{ __('Сохранить') }}
-                                    </x-primary-button>
+                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">{{ __('Сохранить') }}</button>
                                 </div>
                             </form>
                         </div>
@@ -128,11 +126,12 @@
                                             @foreach($favArray as $key => $cat)
                                                 @foreach($cat['value'] as $elem)
                                                     <tr>
-                                                        <td>Всего тендеров с приоритетом &#39;{{$elem['name']}}&#39;</td>
                                                         @if($key === 'Приоритет')
+                                                            <td>Всего тендеров с приоритетом &#39;{{$elem['name']}}&#39;</td>
                                                             <td>{{\App\Models\PriorityTenderModel::where('priority_id', $elem['id'])->leftJoin('favourite_tenders as ft', 'ft.id', '=', 'priority_tender.tender_id')->where('user_id', Auth::id())->count()}}</td>
                                                         @else
-                                                            <td>{{\App\Models\WorkStageTendersModel::where('stage_id', $elem['id'])->leftJoin('favourite_tenders as ft', 'ft.id', '=', 'priority_tender.tender_id')->where('user_id', Auth::id())->count()}}</td>
+                                                            <td>Всего тендеров на этапе &#39;{{$elem['name']}}&#39;</td>
+                                                            <td>{{\App\Models\WorkStageTendersModel::where('stage_id', $elem['id'])->leftJoin('favourite_tenders as ft', 'ft.id', '=', 'work_stage_tenders.favourite_id')->where('user_id', Auth::id())->count()}}</td>
                                                         @endif
                                                         <td>
                                                             @if($key === 'Приоритет')
@@ -192,9 +191,7 @@
                                     <input type="text" id="code" name="code" class="form-control">
                                     <label for="color">Цвет для отображения:</label>
                                     <input type="color" id="color" name="color" class="form-control">
-                                    <x-primary-button type="submit" class="btn btn-custom-size lg-size btn-primary">
-                                        {{ __('Сохранить') }}
-                                    </x-primary-button>
+                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">{{ __('Сохранить') }}</button>
                                 </form>
                             </div>
                         </div>
@@ -208,9 +205,7 @@
                                             <option value="{{$elem['id']}}">{{$elem['name']}}</option>
                                         @endforeach
                                     </select>
-                                    <x-primary-button type="submit" class="btn btn-custom-size lg-size btn-primary">
-                                        {{ __('Удалить') }}
-                                    </x-primary-button>
+                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">{{ __('Удалить') }}</button>
                                 </form>
                             </div>
                         </div>
@@ -243,9 +238,7 @@
                                     <input type="text" id="name" name="name" class="form-control">
                                     <label for="code">Код этапа работы:</label>
                                     <input type="text" id="code" name="code" class="form-control">
-                                    <x-primary-button type="submit" class="btn btn-custom-size lg-size btn-primary">
-                                        {{ __('Сохранить') }}
-                                    </x-primary-button>
+                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">{{ __('Сохранить') }}</button>
                                 </form>
                             </div>
                         </div>
@@ -259,9 +252,7 @@
                                             <option value="{{$elem['id']}}">{{$elem['name']}}</option>
                                         @endforeach
                                     </select>
-                                    <x-primary-button type="submit" class="btn btn-custom-size lg-size btn-primary">
-                                        {{ __('Удалить') }}
-                                    </x-primary-button>
+                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">{{ __('Удалить') }}</button>
                                 </form>
                             </div>
                         </div>

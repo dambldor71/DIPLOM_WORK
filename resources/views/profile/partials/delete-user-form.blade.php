@@ -9,10 +9,7 @@
         </p>
     </header>
 
-    <x-danger-button class="btn btn-custom-size lg-size btn-primary"
-        x-data=""
-        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('Удалить учётную запись') }}</x-danger-button>
+    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">{{ __('Удалить') }}</button>
 
     <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
         <form method="post" action="{{ route('profile.destroy') }}" class="p-6">

@@ -6,7 +6,7 @@
             <div class="row h-100">
                 <div class="col-lg-12">
                     <div class="breadcrumb-item text-night-rider">
-                        <h2 class="breadcrumb-heading">Редактирование профиля</h2>
+                        <h2 class="breadcrumb-heading">Редактирование входных данных</h2>
                         <ul>
                             <li>
                                 <a href="">На главную</a>

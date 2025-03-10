@@ -22,12 +22,14 @@
         </div>
     </div>
     <div class="background-img" data-bg-image="myPublic/assets/images/product/large-size/back.png">
-        <div class="modal-search">
-            <span class="searchbox-info">Начните поиск прямо сейчас</span>
-            <form action="" class="hm-searchbox">
-                <input type="text" name="searchString" placeholder="Ключевое слово, номер закупки, город" onblur="if(this.value==''){this.value='Ключевое слово, номер закупки, город'}" onfocus="if(this.value=='Ключевое слово, номер закупки, город'){this.value=''}">
-                <button class="search-btn" type="submit" aria-label="searchbtn"><i class="pe-7s-search"></i></button>
-            </form>
+        <div class="shipping-area section-space-y-axis-100">
+            <div class="modal-search">
+                <span class="searchbox-info">Начните поиск прямо сейчас</span>
+                <form action="{{route('search')}}" method="GET" class="hm-searchbox">
+                    <input type="text" name="searchString" placeholder="Введите ключевое слово" onblur="if(this.value==''){this.value='Ключевое слово, номер закупки, город'}" onfocus="if(this.value=='Ключевое слово, номер закупки, город'){this.value=''}">
+                    <button class="search-btn" type="submit" aria-label="searchbtn"><i class="pe-7s-search"></i></button>
+                </form>
+            </div>
         </div>
     </div>
     <div class="background-img">

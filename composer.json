@@ -10,10 +10,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-curl": "*",
+        "ext-http": "*",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
-        "ext-curl": "*",
-        "ext-http": "*"
+        "maatwebsite/excel": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

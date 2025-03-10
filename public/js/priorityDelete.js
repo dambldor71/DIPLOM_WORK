@@ -20,7 +20,7 @@ formDeletePriority.addEventListener('submit', function(event) {
             alert("Приоритет удалён");
         },
         error: function(response) {
-            console.log(response)
+            alert("Приоритет используется в избранных тендерах. Удаление невозможно.");
         }
     });
 

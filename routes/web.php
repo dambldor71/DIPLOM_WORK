@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AddDeleteSettingsController;
 use App\Http\Controllers\ChosenTenderController;
+use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\FavouriteTenderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TenderController;
@@ -32,7 +33,6 @@ Route::prefix('/catalog')->controller(TenderController::class)->group(function (
     Route::get('/{id}', [TenderController::class, 'show'])->name('tender');
 });
 
-
 Route::post('/favourite-add', [ChosenTenderController::class, 'addFavouriteTender']);
 Route::post('/favourite-delete', [ChosenTenderController::class, 'removeFavouriteTender']);
 Route::post('/favourite-stage', [ChosenTenderController::class, 'addStageTender']);
@@ -49,6 +49,7 @@ Route::post('/priority-delete', [AddDeleteSettingsController::class, 'deletePrio
 Route::post('/stage-add', [AddDeleteSettingsController::class, 'addStage'])->name('stage-add');
 Route::post('/stage-delete', [AddDeleteSettingsController::class, 'deleteStage'])->name('stage-delete');
 
+Route::get('/favourite/export', [ExcelController::class, 'export'])->name('export');
 
 Route::get('/logout', function () {
     Auth::logout();
