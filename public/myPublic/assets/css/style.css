@@ -8860,6 +8860,10 @@ fieldset:disabled .btn {
   margin-bottom: 0 !important;
 }
 
+.mb-00 {
+    margin-bottom: 10px !important;
+}
+
 .mb-1 {
   margin-bottom: 0.3125rem !important;
 }

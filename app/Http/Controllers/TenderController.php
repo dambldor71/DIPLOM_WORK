@@ -12,6 +12,7 @@ class TenderController extends Controller
 {
     public function index(TenderService $service, Request $request)
     {
+//        dd($request->query());
         $tenderInfo = Tender::select('id', 'tender_code', 'price', 'link', 'description',
             'customer', 'start_date', 'update_date', 'end_date', 'source_link');
 

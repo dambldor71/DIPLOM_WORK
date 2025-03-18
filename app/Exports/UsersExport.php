@@ -12,6 +12,17 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class UsersExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize
 {
+    protected $userId;
+    protected $uploadKind;
+    protected  $needField;
+
+    public function __construct($userId, $uploadKind, $needField)
+    {
+        $this->userId = $userId;
+        $this->uploadKind = $uploadKind;
+        $this->needField = $needField;
+    }
+
     /**
     * @return \Illuminate\Support\Collection
     */

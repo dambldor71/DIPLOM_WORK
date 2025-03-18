@@ -46,6 +46,7 @@ class TenderService
             $typeArr = [];
 
             foreach ($searchBox as $key => $searchElement) {
+//                dd($searchBox);
                 $notNums = ['searchString', 'page', 'min-price', 'max-price', 'priority', 'stage'];
                 if (in_array($key, $notNums)) {
                     continue;

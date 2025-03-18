@@ -96,7 +96,7 @@
                                                                         @if($value['cid'] === $category['cid'])
                                                                             @if($num < 6)
                                                                                 <li>
-                                                                                    <a href="http://{{$_SERVER['HTTP_HOST']}}/catalog?{{$value['fid']}}={{$category['cid']}}">{{$value['name']}}</a>
+                                                                                    <a href="http://{{$_SERVER['HTTP_HOST']}}/catalog?{{$value['fid']}}f={{$category['cid']}}">{{$value['name']}}</a>
                                                                                 </li>
                                                                                 @php
                                                                                     $num += 1

@@ -28,7 +28,7 @@ $(document).ready(function (){
         });
 
         const locationPathName = (window.location.pathname).split('/');
-        
+
         if (locationPathName[1] === 'catalog' && locationPathName.length === 3) {
             window.location.href = 'http://127.0.0.1:8000/favourite-catalog/' + locationPathName[2];
         } else {

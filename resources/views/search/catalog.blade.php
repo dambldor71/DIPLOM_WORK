@@ -126,15 +126,6 @@
                 <div class="col-xl-9 col-lg-8 order-lg-2 order-1">
                     <div class="product-topbar">
                         <ul>
-                            <li>
-                                @if($title === 'Избранное')
-                                    <a style="border-radius: 20px; font-size: 12px" class="btn btn-custom-size lg-size btn-primary" href="{{route('export')}}">
-                                        Сформировать отчёт
-                                    </a>
-                                @endif
-                            </li>
-                            <li class="product-view-wrap">
-                            </li>
                             <li class="short">
                                 <select class="nice-select rounded-0">
                                     <option value="1">Сортировка по умолчанию</option>
@@ -144,95 +135,189 @@
                                     <option value="5">По номеру тендера</option>
                                 </select>
                             </li>
+                            @if($title === 'Избранное')
+                                <li class="product-view-wrap">
+                                    <ul class="nav" role="tablist">
+                                        <li class="grid-view" role="presentation">
+                                            <a id="grid-view-tab" data-bs-toggle="tab" href="#list-view" role="tab" aria-selected="true">
+                                                Мои тендеры
+                                            </a>
+                                        </li>
+                                        <li class="list-view" role="presentation">
+                                            <a class="active" id="list-view-tab" data-bs-toggle="tab" href="#grid-view" role="tab" aria-selected="true">
+                                                На рассмотрении
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a style="border-radius: 20px; font-size: 12px" class="btn btn-custom-size lg-size btn-primary" href="{{route('export')}}">
+                                        Выполнить выгрузку
+                                    </a>
+                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px; font-size: 12px" id="openUnloadBtn">Выполнить выгрузку</button>
+
+                                    <div id="unloadModal" class="modal">
+                                        <div class="modal-content">
+                                            <h2>Формат выгрузки</h2>
+                                            <form action="{{route('export')}}" id="unloadForm" method="GET">
+                                                <div class="tab-pane fade show active">
+                                                    <label for="file-name">Введите название файла:</label>
+                                                    <input type="text" placeholder="test" value="Отчёт по избранным тендерам на {{date('d.m.Y')}}" id="file-name" name="file-name" class="form-control"><br>
+                                                    <label class="label-checkbox mb-0" for="unload-type">Выберите формат выгрузки:</label>
+                                                    <select id='kinds' name='kinds' class="nice-select wide border-bottom-0 rounded-0">
+                                                        <option value="all">Все тендеры в Избранном</option>
+                                                        <option value="only-my">Только Мои тендеры</option>
+                                                        <option value="only-watch">Только тендеры На рассмотрении</option>
+                                                    </select>
+                                                    <br><br><br><br>
+                                                    <label>Укажите поля для выгрузки:</label>
+                                                    <div class="widgets-item">
+                                                        <ul class="widgets-checkbox">
+                                                            <li>
+                                                                <input name='tender-code' value='tender_code' class="input-checkbox" type="checkbox" id="tender-code" checked>
+                                                                <label class="label-checkbox mb-00" for="tender-code">Код тендера</label>
+                                                                <input name='price' value='price' class="input-checkbox" type="checkbox" id="price" checked>
+                                                                <label class="label-checkbox mb-00" for="price">Цена</label>
+                                                                <input name='link' value='link' class="input-checkbox" type="checkbox" id="link">
+                                                                <label class="label-checkbox mb-00" for="link">Ссылка zakupki.gov</label>
+                                                                <input name='description' value='description' class="input-checkbox" type="checkbox" id="description" checked>
+                                                                <label class="label-checkbox mb-00" for="description">Описание</label>
+                                                                <input name='customer' value='customer' class="input-checkbox" type="checkbox" id="customer" checked>
+                                                                <label class="label-checkbox mb-00" for="customer">Заказчик</label>
+                                                                <input name='start_date' value='start_date' class="input-checkbox" type="checkbox" id="start_date">
+                                                                <label class="label-checkbox mb-00" for="start_date">Дата размещения</label>
+                                                                <input name='update_date' value='update_date' class="input-checkbox" type="checkbox" id="update_date">
+                                                                <label class="label-checkbox mb-00" for="update_date">Дата обновления</label>
+                                                                <input name='end_date' value='end_date' class="input-checkbox" type="checkbox" id="end_date">
+                                                                <label class="label-checkbox mb-00" for="end_date">Дата окончения</label>
+                                                                <input name='priority_id' value='priority_id' class="input-checkbox" type="checkbox" id="priority_id">
+                                                                <label class="label-checkbox mb-00" for="priority_id">Приоритет</label>
+                                                                <input name='stage_id' value='stage_id' class="input-checkbox" type="checkbox" id="stage_id">
+                                                                <label class="label-checkbox mb-00" for="stage_id">Этап работ</label>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openUnloadBtn">{{ __('Сохранить') }}</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
                         </ul>
                     </div>
                     <div class="tab-content text-charcoal pt-8">
-                        <div class="tab-pane fade" id="grid-view" role="tabpanel" aria-labelledby="grid-view-tab">
-                            <div class="product-grid-view row">
-                                <div class="col-lg-4">
-                                    <div class="product-item">
-                                        <div class="product-img img-zoom-effect">
-                                            <a href="single-product-variable.html">
-                                                <img class="img-full" src="assets/images/product/medium-size/shop/1-1-290x350.jpg" alt="Product Images">
-                                            </a>
-                                        </div>
-                                        <div class="product-content">
-                                            <a class="product-name pb-1" href="single-product-variable.html">Auto Clutch & Brake</a>
-                                            <div class="price-box">
-                                                <div class="price-box-holder">
-                                                    <span>Price:</span>
-                                                    <span class="new-price text-primary">$120.00</span>
-                                                </div>
-                                            </div>
-                                            <div class="product-add-action">
-                                                <ul>
-                                                    <li>
-                                                        <a href="cart.html" data-tippy="Add to cart" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-cart"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="quuickview-btn" data-bs-toggle="modal" data-bs-target="#quickModal">
-                                                        <a href="#" data-tippy="Quickview" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder">
-                                                            <i class="pe-7s-look"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade show active" id="list-view" role="tabpanel" aria-labelledby="list-view-tab">
+                        <div class="tab-pane fade show active" id="grid-view" role="tabpanel" aria-labelledby="grid-view-tab">
                             <div class="product-list-view with-sidebar row">
-                                    @foreach($tenderInfo as $oneTender)
-                                    <div class="col-12">
-                                        <div class="product-list-item">
-                                            <div class="product-list-content">
-                                                <a class="product-name pb-2" href="{{route(in_array($oneTender['id'], $favTenders) ? 'favourite-tender' : 'tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
-                                                <div class="price-box pb-1">
-                                                    <span class="new-price" style="color: #2F4C73">{{$oneTender['price']}} ₽</span>
+                                @foreach($tenderInfo as $oneTender)
+{{--                                    @dd($oneTender)--}}
+                                    @if($oneTender['stageName'] === null)
+                                        <div class="col-12">
+                                            <div class="product-list-item">
+                                                <div class="product-list-content">
+                                                    <a class="product-name pb-2" style="display: inline-block" href="{{route(in_array($oneTender['id'], $favTenders) ? 'favourite-tender' : 'tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
+                                                    <p class="short-desc mb-0" style="display: inline-block; margin-left:50px; color: #2F4C73">{{$oneTender['start_date'] . ' - ' . $oneTender['end_date']}}</p>
+                                                    <div class="price-box pb-1">
+                                                        <span class="new-price" style="color: #2F4C73">{{$oneTender['price']}} ₽</span>
+                                                    </div>
+                                                    <div>{{$oneTender['description']}}</div>
+                                                    <p class="short-desc mb-0" style="color: #2F4C73">{{$oneTender['customer']}}</p>
                                                 </div>
-                                                <div>{{$oneTender['description']}}</div>
-                                                <p class="short-desc mb-0" style="color: #2F4C73">{{$oneTender['customer']}}</p>
-                                            </div>
-                                            <ul class="dropdown d-none d-lg-block">
-                                                @if($title === 'Избранное')
-                                                    <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: {{$oneTender['color_code']}};text-align: center; margin-top: 12px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
-                                                        {{$oneTender['name']}}
-                                                    </button>
-                                                @else
-                                                    <button style="font-size: 20px; color: #2F4C73; margin-top: 12px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
-                                                        <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], $favTenders) ? "addZap2" : "addZap1"}}.png" alt="q">
-                                                    </button>
-                                                @endif
-                                                <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="settingButton">
-                                                    @foreach($priority as $element)
-                                                        <button id='{{$element->id}}' class="btn tender-status" style="color: white; background: {{$element->color_code}};text-align: center">
-                                                            {{$element->name}}
+                                                <ul class="dropdown d-none d-lg-block">
+                                                    @if($title === 'Избранное')
+                                                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: {{$oneTender['color_code']}};text-align: center; margin-top: 12px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                            {{$oneTender['name']}}
                                                         </button>
-                                                    @endforeach
-                                                </li>
-{{--                                                    @dd($oneTender)--}}
-                                                <br>
-                                                @if($title === 'Избранное')
-                                                    <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: #2F4C73;text-align: center; margin-top: 12px" type="button" id="stageButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
-                                                        {{$oneTender['stageName'] !== null ? $oneTender['stageName'] : 'Этап не выбран'}}
-                                                    </button>
-                                                    <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="stageButton">
-                                                        @foreach($stage as $element)
-                                                            <button id='{{$element->id}}' class="btn tender-stage">
+                                                    @else
+                                                        <button style="font-size: 20px; color: #2F4C73; margin-top: 12px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                            <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], $favTenders) ? "addZap2" : "addZap1"}}.png" alt="q">
+                                                        </button>
+                                                    @endif
+                                                    <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="settingButton">
+                                                        @foreach($priority as $element)
+                                                            <button id='{{$element->id}}' class="btn tender-status" style="color: white; background: {{$element->color_code}};text-align: center">
                                                                 {{$element->name}}
                                                             </button>
                                                         @endforeach
                                                     </li>
+                                                    {{--                                                    @dd($oneTender)--}}
+                                                    <br>
+                                                    @if($title === 'Избранное')
+                                                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: #2F4C73;text-align: center; margin-top: 12px" type="button" id="stageButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                            {{$oneTender['stageName'] !== null ? $oneTender['stageName'] : 'Этап не выбран'}}
+                                                        </button>
+                                                        <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="stageButton">
+                                                            @foreach($stage as $element)
+                                                                <button id='{{$element->id}}' class="btn tender-stage">
+                                                                    {{$element->name}}
+                                                                </button>
+                                                            @endforeach
+                                                        </li>
+                                                    @endif
+                                                    <br><br>
+                                                </ul>
+                                                @if($title === 'Избранное')
+                                                    <span class="close-button position-absolute end-X" id="{{$oneTender['id']}}" title="Удалить из избранного">&times;</span>
                                                 @endif
-                                            </ul>
-                                            @if($title === 'Избранное')
-                                                <span class="close-button position-absolute end-X" id="{{$oneTender['id']}}" title="Удалить из избранного">&times;</span>
-                                            @endif
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show" id="list-view" role="tabpanel" aria-labelledby="list-view-tab">
+                            <div class="product-list-view with-sidebar row">
+                                    @foreach($tenderInfo as $oneTender)
+                                        @if($oneTender['stageName'] !== null)
+                                            <div class="col-12">
+                                                <div class="product-list-item">
+                                                    <div class="product-list-content">
+                                                        <a class="product-name pb-2" style="display: inline-block" href="{{route(in_array($oneTender['id'], $favTenders) ? 'favourite-tender' : 'tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
+                                                        <p class="short-desc mb-0" style="display: inline-block; margin-left:50px; color: #2F4C73">{{$oneTender['start_date'] . ' - ' . $oneTender['end_date']}}</p>
+                                                        <div class="price-box pb-1">
+                                                            <span class="new-price" style="color: #2F4C73">{{$oneTender['price']}} ₽</span>
+                                                        </div>
+                                                        <div>{{$oneTender['description']}}</div>
+                                                        <p class="short-desc mb-0" style="color: #2F4C73">{{$oneTender['customer']}}</p>
+                                                    </div>
+                                                    <ul class="dropdown d-none d-lg-block">
+                                                        @if($title === 'Избранное')
+                                                            <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: {{$oneTender['color_code']}};text-align: center; margin-top: 12px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                                {{$oneTender['name']}}
+                                                            </button>
+                                                        @else
+                                                            <button style="font-size: 20px; color: #2F4C73; margin-top: 12px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                                <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], $favTenders) ? "addZap2" : "addZap1"}}.png" alt="q">
+                                                            </button>
+                                                        @endif
+                                                        <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="settingButton">
+                                                            @foreach($priority as $element)
+                                                                <button id='{{$element->id}}' class="btn tender-status" style="color: white; background: {{$element->color_code}};text-align: center">
+                                                                    {{$element->name}}
+                                                                </button>
+                                                            @endforeach
+                                                        </li>
+                                                        {{--                                                    @dd($oneTender)--}}
+                                                        <br>
+                                                        @if($title === 'Избранное')
+                                                            <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: #2F4C73;text-align: center; margin-top: 12px" type="button" id="stageButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                                {{$oneTender['stageName'] !== null ? $oneTender['stageName'] : 'Этап не выбран'}}
+                                                            </button>
+                                                            <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="stageButton">
+                                                                @foreach($stage as $element)
+                                                                    <button id='{{$element->id}}' class="btn tender-stage">
+                                                                        {{$element->name}}
+                                                                    </button>
+                                                                @endforeach
+                                                            </li>
+                                                        @endif
+                                                    </ul>
+                                                    @if($title === 'Избранное')
+                                                        <span class="close-button position-absolute end-X" id="{{$oneTender['id']}}" title="Удалить из избранного">&times;</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endif
                                     @endforeach
                             </div>
                         </div>
@@ -266,5 +351,6 @@
     </script>
     <script src="{{asset('js/updateFavouriteTender.js')}}" defer></script>
     <script src="{{asset('js/deleteFavouriteTender.js')}}" defer></script>
+    <script src="{{asset('js/modalUnloadForm.js')}}" defer></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @endsection

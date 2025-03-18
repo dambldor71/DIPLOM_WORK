@@ -6,19 +6,20 @@ use App\Models\FavouriteTenderModel;
 use App\Models\PriorityTenderModel;
 use App\Models\WorkStageTendersModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ChosenTenderController extends Controller
 {
     public function addFavouriteTender(Request $request): void
     {
-        $chosenTenders = FavouriteTenderModel::select('tender_id')->pluck('tender_id')->toArray();
+        $chosenTenders = FavouriteTenderModel::select('tender_id')->where('user_id', Auth::id())->pluck('tender_id')->toArray();
 
         if (!in_array($request->tenderId, $chosenTenders)) {
             FavouriteTenderModel::query()
                 ->insert(['tender_id' => $request->tenderId, 'user_id' => $request->userId]);
 
             $favouriteTenderId = FavouriteTenderModel::select('id')
-                ->where('tender_id', $request->tenderId)->first()->toArray();
+                ->where('tender_id', $request->tenderId)->where('user_id', Auth::id())->first()->toArray();
 
             PriorityTenderModel::query()
                 ->insert(['tender_id' => $favouriteTenderId['id'], 'priority_id' => $request->priority]);
@@ -33,7 +34,7 @@ class ChosenTenderController extends Controller
 
     public function addStageTender(Request $request): void
     {
-        $favouriteId = FavouriteTenderModel::where('tender_id', $request->tenderId)->pluck('id')->first();
+        $favouriteId = FavouriteTenderModel::where('tender_id', $request->tenderId)->where('user_id', Auth::id())->pluck('id')->first();
 
         if (WorkStageTendersModel::where('favourite_id', $favouriteId)->count() !== 0) {
             WorkStageTendersModel::query()->where('favourite_id', $favouriteId)->update(['stage_id' => $request->stage]);
@@ -44,10 +45,10 @@ class ChosenTenderController extends Controller
 
     public function removeFavouriteTender(Request $request): void
     {
-        $favouriteId = FavouriteTenderModel::where('tender_id', $request->tenderId)->pluck('id')->first();
+        $favouriteId = FavouriteTenderModel::where('tender_id', $request->tenderId)->where('user_id', Auth::id())->pluck('id')->first();
 
         PriorityTenderModel::where('tender_id', $favouriteId)->delete();
         WorkStageTendersModel::where('favourite_id', $favouriteId)->delete();
-        FavouriteTenderModel::where('tender_id', $request->tenderId)->delete();
+        FavouriteTenderModel::where('tender_id', $request->tenderId)->where('user_id', Auth::id())->delete();
     }
 }
