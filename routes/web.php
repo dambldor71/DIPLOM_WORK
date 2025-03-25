@@ -5,6 +5,7 @@ use App\Http\Controllers\ChosenTenderController;
 use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\FavouriteTenderController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SupportController;
 use App\Http\Controllers\TenderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
@@ -50,6 +51,8 @@ Route::post('/stage-add', [AddDeleteSettingsController::class, 'addStage'])->nam
 Route::post('/stage-delete', [AddDeleteSettingsController::class, 'deleteStage'])->name('stage-delete');
 
 Route::get('/favourite/export', [ExcelController::class, 'export'])->name('export');
+
+Route::get('/support', [SupportController::class, 'index'])->name('support');
 
 Route::get('/logout', function () {
     Auth::logout();

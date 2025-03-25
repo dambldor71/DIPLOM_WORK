@@ -133,7 +133,7 @@
                                                     </ul>
                                                 </li>
                                                 <li class="megamenu-holder">
-                                                    <a href="">Помощь
+                                                    <a href="{{route('support')}}">Помощь
                                                     </a>
                                                 </li>
                                             </ul>

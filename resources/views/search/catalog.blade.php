@@ -185,8 +185,8 @@
                                                                 <label class="label-checkbox mb-00" for="Дата-размещения">Дата размещения</label>
                                                                 <input name='Дата-обновления' value='update_date' class="input-checkbox" type="checkbox" id="Дата-обновления">
                                                                 <label class="label-checkbox mb-00" for="Дата-обновления">Дата обновления</label>
-                                                                <input name='end_date' value='end_date' class="input-checkbox" type="checkbox" id="end_date">
-                                                                <label class="label-checkbox mb-00" for="end_date">Дата окончения</label>
+                                                                <input name='Дата-завершения' value='end_date' class="input-checkbox" type="checkbox" id="Дата завершения">
+                                                                <label class="label-checkbox mb-00" for="Дата завершения">Дата завершения</label>
                                                                 <input name='Приоритет' value='p.name' class="input-checkbox" type="checkbox" id="Приоритет">
                                                                 <label class="label-checkbox mb-00" for="Приоритет">Приоритет</label>
                                                                 <input name='Этап' value='ws.name as stageName' class="input-checkbox" type="checkbox" id="Этап">
