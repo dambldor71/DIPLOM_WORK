@@ -151,9 +151,6 @@
                                     </ul>
                                 </li>
                                 <li>
-                                    <a style="border-radius: 20px; font-size: 12px" class="btn btn-custom-size lg-size btn-primary" href="{{route('export')}}">
-                                        Выполнить выгрузку
-                                    </a>
                                     <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px; font-size: 12px" id="openUnloadBtn">Выполнить выгрузку</button>
 
                                     <div id="unloadModal" class="modal">
@@ -174,26 +171,26 @@
                                                     <div class="widgets-item">
                                                         <ul class="widgets-checkbox">
                                                             <li>
-                                                                <input name='tender-code' value='tender_code' class="input-checkbox" type="checkbox" id="tender-code" checked>
-                                                                <label class="label-checkbox mb-00" for="tender-code">Код тендера</label>
-                                                                <input name='price' value='price' class="input-checkbox" type="checkbox" id="price" checked>
-                                                                <label class="label-checkbox mb-00" for="price">Цена</label>
-                                                                <input name='link' value='link' class="input-checkbox" type="checkbox" id="link">
-                                                                <label class="label-checkbox mb-00" for="link">Ссылка zakupki.gov</label>
-                                                                <input name='description' value='description' class="input-checkbox" type="checkbox" id="description" checked>
-                                                                <label class="label-checkbox mb-00" for="description">Описание</label>
-                                                                <input name='customer' value='customer' class="input-checkbox" type="checkbox" id="customer" checked>
-                                                                <label class="label-checkbox mb-00" for="customer">Заказчик</label>
-                                                                <input name='start_date' value='start_date' class="input-checkbox" type="checkbox" id="start_date">
-                                                                <label class="label-checkbox mb-00" for="start_date">Дата размещения</label>
-                                                                <input name='update_date' value='update_date' class="input-checkbox" type="checkbox" id="update_date">
-                                                                <label class="label-checkbox mb-00" for="update_date">Дата обновления</label>
+                                                                <input name='Код-тендера' value='tender_code' class="input-checkbox" type="checkbox" id="Код-тендера" checked>
+                                                                <label class="label-checkbox mb-00" for="Код-тендера">Код тендера</label>
+                                                                <input name='Цена' value='price' class="input-checkbox" type="checkbox" id="Цена" checked>
+                                                                <label class="label-checkbox mb-00" for="Цена">Цена</label>
+                                                                <input name='zakupki.gov' value='link' class="input-checkbox" type="checkbox" id="zakupki.gov">
+                                                                <label class="label-checkbox mb-00" for="zakupki.gov">Ссылка zakupki.gov</label>
+                                                                <input name='Описание' value='tenders.description' class="input-checkbox" type="checkbox" id="Описание" checked>
+                                                                <label class="label-checkbox mb-00" for="Описание">Описание</label>
+                                                                <input name='Заказчик' value='customer' class="input-checkbox" type="checkbox" id="Заказчик" checked>
+                                                                <label class="label-checkbox mb-00" for="Заказчик">Заказчик</label>
+                                                                <input name='Дата-размещения' value='start_date' class="input-checkbox" type="checkbox" id="Дата-размещения">
+                                                                <label class="label-checkbox mb-00" for="Дата-размещения">Дата размещения</label>
+                                                                <input name='Дата-обновления' value='update_date' class="input-checkbox" type="checkbox" id="Дата-обновления">
+                                                                <label class="label-checkbox mb-00" for="Дата-обновления">Дата обновления</label>
                                                                 <input name='end_date' value='end_date' class="input-checkbox" type="checkbox" id="end_date">
                                                                 <label class="label-checkbox mb-00" for="end_date">Дата окончения</label>
-                                                                <input name='priority_id' value='priority_id' class="input-checkbox" type="checkbox" id="priority_id">
-                                                                <label class="label-checkbox mb-00" for="priority_id">Приоритет</label>
-                                                                <input name='stage_id' value='stage_id' class="input-checkbox" type="checkbox" id="stage_id">
-                                                                <label class="label-checkbox mb-00" for="stage_id">Этап работ</label>
+                                                                <input name='Приоритет' value='p.name' class="input-checkbox" type="checkbox" id="Приоритет">
+                                                                <label class="label-checkbox mb-00" for="Приоритет">Приоритет</label>
+                                                                <input name='Этап' value='ws.name as stageName' class="input-checkbox" type="checkbox" id="Этап">
+                                                                <label class="label-checkbox mb-00" for="Этап">Этап работ</label>
                                                             </li>
                                                         </ul>
                                                     </div>

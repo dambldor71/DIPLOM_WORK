@@ -3,12 +3,14 @@
 namespace App\Exports;
 
 use App\Models\Tender;
+use App\Models\WorkStageTendersModel;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Illuminate\Support\Collection;
 
 class UsersExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize
 {
@@ -28,43 +30,44 @@ class UsersExport implements FromCollection, WithHeadings, WithStyles, ShouldAut
     */
     public function collection()
     {
-        return Tender::select('tenders.id', 'tender_code', 'p.name', 'ws.name as stageName',
-            'filters.name as lawName', 'fp.name as purchaseName', 'fty.name as typeName', 'price', 'customer',
-            'tenders.description', 'start_date', 'update_date', 'end_date', 'link', 'source_link')
+        $tenders = Tender::select($this->needField)
             ->rightJoin('favourite_tenders as ft' , 'ft.tender_id', '=', 'tenders.id')
             ->leftJoin('filters', 'tenders.law', '=', 'filters.fid')
             ->leftJoin('filters as fp', 'tenders.purchase_stage', '=', 'fp.fid')
             ->leftJoin('filters as fty', 'tenders.type_of_select', '=', 'fty.fid')
             ->where('ft.user_id', Auth::id())
             ->leftJoin('priority_tender as pt', 'pt.tender_id', '=', 'ft.id')
-            ->leftJoin('priority as p', 'p.id', '=', 'pt.priority_id')
-            ->leftJoin('work_stage_tenders as wst', 'wst.favourite_id', '=', 'ft.id')
-            ->leftJoin('work_stage as ws', 'ws.id', '=', 'wst.stage_id')
-            ->get();
+            ->leftJoin('priority as p', 'p.id', '=', 'pt.priority_id');
+
+        if ($this->uploadKind === 'only-my') {
+            $tenders = $tenders
+                ->join('work_stage_tenders as wst', 'wst.favourite_id', '=', 'ft.id')
+                ->leftJoin('work_stage as ws', 'ws.id', '=', 'wst.stage_id');;
+        } elseif ($this->uploadKind === 'only-watch') {
+            $tenders = $tenders
+                ->leftJoin('work_stage_tenders as wst', 'wst.favourite_id', '=', 'ft.id')
+                ->whereNotIn('ft.id', function ($query) {
+                    $query
+                        ->select('favourite_id')
+                        ->from('work_stage_tenders');
+                })
+                ->leftJoin('work_stage as ws', 'ws.id', '=', 'wst.stage_id');
+        } else {
+            $tenders = $tenders
+                ->leftJoin('work_stage_tenders as wst', 'wst.favourite_id', '=', 'ft.id')
+                ->leftJoin('work_stage as ws', 'ws.id', '=', 'wst.stage_id');
+        }
+
+//        dd($tenders->get());
+        return $tenders->get();
     }
 
     public function headings(): array
     {
-        return [
-            'ID',
-            'Код тендера',
-            'Приоритет',
-            'Этап работы над тендером',
-            'Закон',
-            'Этап тендера',
-            'Способ определения поставщика',
-            'Цена',
-            'Заказчик',
-            'Описание',
-            'Дата начала',
-            'Последнее обновление',
-            'Дата окончания',
-            'Ссылка на эл.площадку',
-            'Ссылка на первоисточник',
-        ];
+        return array_keys($this->needField);
     }
 
-    public function styles(Worksheet $sheet)
+    public function styles(Worksheet $sheet): array
     {
         $highestRowAndColumn = $sheet->getHighestRowAndColumn();
         $range = 'A1:' . $highestRowAndColumn['column'] . $highestRowAndColumn['row'];

@@ -11,6 +11,12 @@ class ExcelController extends Controller
 {
     public function export(Request $request)
     {
-        return Excel::download(new UsersExport(Auth::id(), $request['kinds'], array_slice($request->all(), 2)), $request['file-name']. '.xlsx');
+        return Excel::download(
+            new UsersExport(
+                Auth::id(),
+                $request['kinds'],
+                array_slice($request->all(), 2)),
+            $request['file-name']. '.xlsx'
+        );
     }
 }
