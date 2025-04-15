@@ -9,10 +9,16 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index(Request $request, $id, TenderService $service)
+    public function index($id, TenderService $service)
     {
         $userInfo = UserInfoModel::select('name', 'surname', 'phone', 'birthday', 'telegram')->where('user_id', $id)->get()->toArray();
-//        dd($userInfo);
+        if ($userInfo === []) {
+            $userInfo = [0 => ["name" => "Данные",
+                                "surname" => "отсутствуют",
+                                "phone" => "Данные отсутствуют",
+                                "birthday" => "Данные отсутствуют",
+                                "telegram" => "Данные отсутствуют"]];
+        }
         $categories = Category::query()->get()->toArray();
         $filters = $service->selectFilter()->get()->toArray();
 

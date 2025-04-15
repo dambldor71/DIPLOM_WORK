@@ -21,9 +21,9 @@ return new class extends Migration
             $table->foreignId('type_of_select')->constrained('filters');
             $table->float('price');
             $table->text('customer');
-            $table->string('start_date');
-            $table->string('update_date');
-            $table->string('end_date')->value('00.00.0000');
+            $table->date('start_date');
+            $table->date('update_date');
+            $table->date('end_date')->nullable();
             $table->text('source_link');
             $table->timestamps('updated_at');
         });

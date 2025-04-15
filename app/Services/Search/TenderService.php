@@ -35,10 +35,9 @@ class TenderService
     public function showAll($tenderInformatrion, $searchBox, $catalogType = 'all')
     {
         $tenderInfo = $tenderInformatrion;
-//        dd($searchBox);
-//        dd($tenderInformatrion->get()->toArray(), $searchBox);
         $usedFiltersPart = [];
         $usedFiltersIds = [];
+//        dd($searchBox);
 
         if (!empty($searchBox)) {
             $lawArr = [];
@@ -46,8 +45,8 @@ class TenderService
             $typeArr = [];
 
             foreach ($searchBox as $key => $searchElement) {
-//                dd($searchBox);
-                $notNums = ['searchString', 'page', 'min-price', 'max-price', 'priority', 'stage'];
+                $notNums = ['searchString', 'page', 'min-price', 'max-price', 'priority',
+                    'stage', 'stDate1', 'stDate2', 'finDate1', 'finDate2'];
                 if (in_array($key, $notNums)) {
                     continue;
                 }
@@ -63,19 +62,45 @@ class TenderService
                 $usedFiltersIds[] = str_replace('f', '', $key);
             }
 
+            // СТРОКА ПОИСКА
             if(!empty($searchBox['searchString'])) {
                 $tenderInfo = $tenderInfo->whereLike('description', '%' . $searchBox['searchString'] . '%');
                 $usedFiltersPart['searchString'] = $searchBox['searchString'];
             }
+
+            // ДАТЫ
+            if (!empty($searchBox['stDate1'])) {
+                $tenderInfo = $tenderInfo->where('start_date', '>', $searchBox['stDate1']);
+            }
+
+            if (!empty($searchBox['stDate2'])) {
+                $tenderInfo = $tenderInfo->where('start_date', '<', $searchBox['stDate2']);
+            }
+
+            if (!empty($searchBox['finDate1'])) {
+                $tenderInfo = $tenderInfo->where('end_date', '>', $searchBox['finDate1']);
+            }
+
+            if (!empty($searchBox['finDate2'])) {
+                $tenderInfo = $tenderInfo->where('end_date', '<', $searchBox['finDate2']);
+            }
+
+            // ЗАКОН
             if (!empty($lawArr)) {
                 $tenderInfo = $tenderInfo->whereIn('law', $lawArr);
             }
+
+            // ЭТАП
             if (!empty($stageArr)) {
                 $tenderInfo = $tenderInfo->whereIn('purchase_stage', $stageArr);
             }
+
+            // СПОСОБ ОПРЕДЕЛЕНИЯ ПОСТАВЩИКА
             if (!empty($typeArr)) {
                 $tenderInfo = $tenderInfo->whereIn('type_of_select', $typeArr);
             }
+
+            // ЦЕНА
             if (in_array('min-price', array_keys($searchBox))) {
                 if ($searchBox['min-price'] === null) {
                     $searchBox['min-price'] = 0;
@@ -84,12 +109,12 @@ class TenderService
                     $searchBox['max-price'] = Tender::pluck('price')->max();
                 }
                 $tenderInfo = $tenderInfo->where('price', '>', (float)$searchBox['min-price'])->where('price', '<', (float)$searchBox['max-price']);
-                $usedFiltersPart['min-price'] = $searchBox['min-price'];
-                $usedFiltersPart['max-price'] = $searchBox['max-price'];
+                $usedFiltersPart['price'] = $searchBox['min-price'] .  'руб. — ' . $searchBox['max-price'] . 'руб.';
             }
 
-//            dd($searchBox);
+            // ДЛЯ ИЗБРАННОГО
             if ($catalogType !== 'all') {
+                // ПРИОРИТЕТ
                 if (in_array('priority', array_keys($searchBox))) {
                     if ($searchBox['priority'] !== 'all') {
                         $tenderInfo = $tenderInfo->where('p.id', (int)$searchBox['priority']);
@@ -98,7 +123,9 @@ class TenderService
                             ->toArray()[0];
                     }
                 }
-                if (in_array('priority', array_keys($searchBox))) {
+
+                // ЭТАП РАБОТ
+                if (in_array('stage', array_keys($searchBox))) {
                     if ($searchBox['stage'] !== 'all') {
                         $tenderInfo = $tenderInfo->where('ws.id', (int)$searchBox['stage']);
                         $usedFiltersPart[] = WorkStageModel::where('id', (int)$searchBox['stage'])
@@ -120,14 +147,11 @@ class TenderService
 
         if (count($tenderInfo->get()) > 10) {
             $links += 1;
-//            dd($tenderInfo, $tenderInfo->paginate(10), $tenderInfo->paginate(10)->withQueryString(), $tenderInfo->paginate(10)->withQueryString()->links());
             $tenderInfo = $tenderInfo->paginate(10)->withQueryString();
-//            dd($tenderInfo);
         } else {
             $tenderInfo = $tenderInfo->get();
         }
 
-//        dd($tenderInfo);
         $usedFilters = Filter::query()
             ->whereIn('fid', $usedFiltersIds)
             ->pluck('name')
@@ -145,7 +169,7 @@ class TenderService
             ->toArray();
 
 //        dd($tenderInfo);
-
+//        dd($usedFilters);
         return view('search.catalog',
             compact(
                 'tenderInfo', 'categories', 'allTendersNum', 'filters', 'links', 'title', 'usedFilters'

@@ -89,10 +89,42 @@
                                 <div class="widgets-item">
                                     <label for="min-price">Минимальная цена:</label>
                                     <input class="form-control" name="min-price" type="text" id="min-price" value="{{in_array('min-price', array_keys($usedFilters)) ? $usedFilters['min-price'] : 0}}">
-
                                     <label for="max-price">Максимальная цена:</label>
                                     <input class="form-control" name="max-price" type="text" id="max-price" value="{{in_array('max-price', array_keys($usedFilters)) ? $usedFilters['max-price'] : Tender::pluck('price')->max()}}">
                                 </div>
+                            </div>
+                            <div class="widgets-area widgets-filter mb-9">
+                                <h2 class="widgets-title mb-5">Дата</h2>
+                                <label style="color: #0b0b0b">Размещение:</label>
+                                <div style="display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 10px;">
+                                    <span>От:</span>
+                                    <input type="date" id="stDate1" name="stDate1" class="form-control">
+                                </div>
+                                <div style="display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 10px;">
+                                    <span>До:</span>
+                                    <input type="date" id="stDate2" name="stDate2" class="form-control">
+                                </div>
+                                <br>
+
+                                <label style="color: #0b0b0b">Окончание:</label>
+                                <div style="display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 10px;">
+                                    <span>От:</span>
+                                    <input type="date" id="finDate1" name="finDate1" class="form-control">
+                                </div>
+                                <div style="display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 10px;">
+                                    <span>До:</span>
+                                    <input type="date" id="finDate2" name="finDate2" class="form-control">
+                                </div>
+{{--                                <div class="widgets-item">--}}
+{{--                                    <label>Размещение:</label>--}}
+{{--                                    --}}{{--НУЖНО В ОДНУ СТРОКУ--}}
+{{--                                    <span style="display: inline-block; margin-right: 5px;">От:</span>--}}
+{{--                                    <input type="date" id="stDate1" name="stDate1" class="form-control" style="display: inline-block;">--}}
+{{--                                    До: <input type="date" id="stDate2" name="stDate2" class="form-control"><br>--}}
+{{--                                    <label>Окончание:</label>--}}
+{{--                                    От: <input type="date" id="finDate1" name="finDate1" class="form-control">--}}
+{{--                                    До: <input type="date" id="finDate2" name="finDate2" class="form-control">--}}
+{{--                                </div>--}}
                             </div>
                             @foreach($categories as $category)
                                 <div class="widgets-area mb-9">

@@ -18,7 +18,7 @@ class FavouriteTenderController extends Controller
             ->leftJoin('priority_tender as pt', 'pt.tender_id', '=', 'ft.id')
             ->leftJoin('priority as p', 'p.id', '=', 'pt.priority_id')
             ->leftJoin('work_stage_tenders as wst', 'wst.favourite_id', '=', 'ft.id')
-            ->leftJoin('work_stage as ws', 'ws.id', '=', 'wst.stage_id');
+            ->leftJoin('work_stage as ws', 'ws.id', '=', 'wst.stage_id')->orderBy('p.name');
         $searchBox = $request->query();
         $catalogType = 'favourite';
 

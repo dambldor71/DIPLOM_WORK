@@ -77,7 +77,7 @@
                                         <nav class="main-nav">
                                             <ul>
                                                 <li class="megamenu-holder">
-                                                    <a href="{{route('test',  Auth::id())}}">Личный кабинет
+                                                    <a href="{{route('test',  Auth::id())}}">Профиль
                                                     </a>
                                                 </li>
                                                 <li class="megamenu-holder">
@@ -110,7 +110,7 @@
                                                     </ul>
                                                 </li>
                                                 <li class="megamenu-holder">
-                                                    <a href="{{route('favourite')}}">Избранное
+                                                    <a href="{{route('favourite')}}">Личный кабинет
                                                         <i class="pe-7s-angle-down"></i>
                                                     </a>
                                                     <ul class="drop-menu megamenu">
