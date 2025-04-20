@@ -9260,6 +9260,10 @@ fieldset:disabled .btn {
   padding: 0 !important;
 }
 
+.p-zakladka {
+    right: 16% !important;
+}
+
 .p-1 {
   padding: 0.3125rem !important;
 }

@@ -37,7 +37,7 @@ class TenderService
         $tenderInfo = $tenderInformatrion;
         $usedFiltersPart = [];
         $usedFiltersIds = [];
-//        dd($searchBox);
+//        dd($tenderInfo->get()->toArray());
 
         if (!empty($searchBox)) {
             $lawArr = [];

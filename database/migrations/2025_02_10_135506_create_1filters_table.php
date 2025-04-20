@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('filters', function (Blueprint $table) {
             $table->id('fid');
             $table->text('name')->unique();
-            $table->string('description')->nullable();
+//            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

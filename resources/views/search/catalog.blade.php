@@ -245,21 +245,21 @@
                                             <div class="product-list-item">
                                                 <div class="product-list-content">
                                                     <a class="product-name pb-2" style="display: inline-block" href="{{route(in_array($oneTender['id'], $favTenders) ? 'favourite-tender' : 'tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
-                                                    <p class="short-desc mb-0" style="display: inline-block; margin-left:50px; color: #2F4C73">{{$oneTender['start_date'] . ' - ' . $oneTender['end_date']}}</p>
+                                                    <p class="short-desc mb-0" style="display: inline-block; margin-left:10px; color: #2F4C73">{{$oneTender['law_name']}}</p>
                                                     <div class="price-box pb-1">
                                                         <span class="new-price" style="color: #2F4C73">{{$oneTender['price']}} ₽</span>
                                                     </div>
                                                     <div>{{$oneTender['description']}}</div>
                                                     <p class="short-desc mb-0" style="color: #2F4C73">{{$oneTender['customer']}}</p>
                                                 </div>
-                                                <ul class="dropdown d-none d-lg-block">
+                                                <ul class="dropdown d-none d-lg-block" style="margin-left:75px">
                                                     @if($title === 'Избранное')
-                                                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: {{$oneTender['color_code']}};text-align: center; margin-top: 12px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: {{$oneTender['color_code']}};text-align: center; margin-top: 5px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
                                                             {{$oneTender['name']}}
                                                         </button>
                                                     @else
-                                                        <button style="font-size: 20px; color: #2F4C73; margin-top: 12px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
-                                                            <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], $favTenders) ? "addZap2" : "addZap1"}}.png" alt="q">
+                                                        <button style="font-size: 20px; color: #2F4C73; margin-top: 5px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                            <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], $favTenders) ? "addZap2" : "addZap1"}}.png" alt="q" title="">
                                                         </button>
                                                     @endif
                                                     <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="settingButton">
@@ -272,7 +272,7 @@
                                                     {{--                                                    @dd($oneTender)--}}
                                                     <br>
                                                     @if($title === 'Избранное')
-                                                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: #2F4C73;text-align: center; margin-top: 12px" type="button" id="stageButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: #2F4C73;text-align: center; margin-top: 5px" type="button" id="stageButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
                                                             {{$oneTender['stageName'] !== null ? $oneTender['stageName'] : 'Этап не выбран'}}
                                                         </button>
                                                         <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="stageButton">
@@ -282,6 +282,18 @@
                                                                 </button>
                                                             @endforeach
                                                         </li>
+                                                    @endif
+                                                    <br><br>
+                                                    <p class="short-desc mb-0" style="margin-top: 30px; color: #2F4C73">{{$oneTender['start_date'] . ' - ' . $oneTender['end_date']}}</p>
+                                                    <p class="short-desc mb-0" style="display: inline-block; margin-top: 10px; color: #2F4C73">{{$oneTender['purchase_stage']}}</p>
+                                                    @if(!str_contains($oneTender['difference'], '-') && !str_contains($oneTender['difference'], '00:00:00'))
+                                                        @if ((int) explode(' ', $oneTender['difference'])[0] >= 7)
+                                                            <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: green">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
+                                                        @elseif((int) explode(' ', $oneTender['difference'])[0] > 3)
+                                                            <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: orangered">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
+                                                        @else
+                                                            <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: darkred">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
+                                                        @endif
                                                     @endif
                                                     <br><br>
                                                 </ul>
@@ -297,26 +309,27 @@
                         <div class="tab-pane fade show" id="list-view" role="tabpanel" aria-labelledby="list-view-tab">
                             <div class="product-list-view with-sidebar row">
                                     @foreach($tenderInfo as $oneTender)
+{{--                                        @dd($tenderInfo)--}}
                                         @if($oneTender['stageName'] !== null)
                                             <div class="col-12">
                                                 <div class="product-list-item">
                                                     <div class="product-list-content">
                                                         <a class="product-name pb-2" style="display: inline-block" href="{{route(in_array($oneTender['id'], $favTenders) ? 'favourite-tender' : 'tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
-                                                        <p class="short-desc mb-0" style="display: inline-block; margin-left:50px; color: #2F4C73">{{$oneTender['start_date'] . ' - ' . $oneTender['end_date']}}</p>
+                                                        <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: #2F4C73">{{$oneTender['law_name']}}</p>
                                                         <div class="price-box pb-1">
                                                             <span class="new-price" style="color: #2F4C73">{{$oneTender['price']}} ₽</span>
                                                         </div>
                                                         <div>{{$oneTender['description']}}</div>
                                                         <p class="short-desc mb-0" style="color: #2F4C73">{{$oneTender['customer']}}</p>
                                                     </div>
-                                                    <ul class="dropdown d-none d-lg-block">
+                                                    <ul class="dropdown d-none d-lg-block" style="margin-left:75px">
                                                         @if($title === 'Избранное')
-                                                            <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: {{$oneTender['color_code']}};text-align: center; margin-top: 12px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                            <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: {{$oneTender['color_code']}};text-align: center; margin-top: 5px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
                                                                 {{$oneTender['name']}}
                                                             </button>
                                                         @else
-                                                            <button style="font-size: 20px; color: #2F4C73; margin-top: 12px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
-                                                                <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], $favTenders) ? "addZap2" : "addZap1"}}.png" alt="q">
+                                                            <button style="font-size: 20px; color: #2F4C73; margin-top: 5px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                                <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], $favTenders) ? "addZap2" : "addZap1"}}.png" alt="q"  title="{{$oneTender['priority']}}">
                                                             </button>
                                                         @endif
                                                         <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="settingButton">
@@ -326,10 +339,9 @@
                                                                 </button>
                                                             @endforeach
                                                         </li>
-                                                        {{--                                                    @dd($oneTender)--}}
                                                         <br>
                                                         @if($title === 'Избранное')
-                                                            <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: #2F4C73;text-align: center; margin-top: 12px" type="button" id="stageButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                            <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: #2F4C73;text-align: center; margin-top: 5px" type="button" id="stageButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
                                                                 {{$oneTender['stageName'] !== null ? $oneTender['stageName'] : 'Этап не выбран'}}
                                                             </button>
                                                             <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="stageButton">
@@ -340,6 +352,18 @@
                                                                 @endforeach
                                                             </li>
                                                         @endif
+                                                        <p class="short-desc mb-0" style="margin-top: 30px; color: #2F4C73">{{$oneTender['start_date'] . ' - ' . $oneTender['end_date']}}</p>
+                                                        <p class="short-desc mb-0" style="display: inline-block; margin-top: 10px; color: #2F4C73">{{$oneTender['purchase_stage']}}</p>
+                                                        @if(!str_contains($oneTender['difference'], '-') && !str_contains($oneTender['difference'], '00:00:00'))
+                                                            @if ((int) explode(' ', $oneTender['difference'])[0] >= 7)
+                                                                <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: green">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
+                                                            @elseif((int) explode(' ', $oneTender['difference'])[0] > 3)
+                                                                <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: orangered">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
+                                                            @else
+                                                                <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: darkred">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
+                                                            @endif
+                                                        @endif
+                                                        <br><br>
                                                     </ul>
                                                     @if($title === 'Избранное')
                                                         <span class="close-button position-absolute end-X" id="{{$oneTender['id']}}" title="Удалить из избранного">&times;</span>
