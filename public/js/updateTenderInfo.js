@@ -34,7 +34,7 @@ function simulateSleep(ms) {
 
 async function doSomethingWithDelay() {
     console.log("Начало выполнения");
-    await simulateSleep(2000);
+    await simulateSleep(2500);
     console.log("Прошло 2 секунды");
     location.reload(true);
     console.log("Продолжение выполнения");
