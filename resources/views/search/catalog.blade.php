@@ -30,15 +30,21 @@
     </div>
     <div class="col-lg-12">
         <div>
-            <h3 style="margin-left: 350px; margin-top: 50px; color: #1f2226">{{$allTendersNum}}</h3>
+            <h3 style="display: inline-block; margin-left: 350px; margin-top: 50px; color: #1f2226">{{$allTendersNum}}</h3>
+{{--            @dd($updateTime)--}}
+            <p class="short-desc mb-0" style="margin-left: 160px; display: inline-block; color: #2F4C73">
+                Данные обновлены {{ str_replace('-', '.', $updateTime[0]) }}
+            </p>
         </div>
     </div>
     <div>
         <ul class="widgets-tags" style="margin-left: 345px; margin-top: 25px; color: #2F4C73">
-            @foreach($usedFilters as $uFilter)
-                <li>
-                    <a>{{$uFilter}}</a>
-                </li>
+            @foreach($usedFilters as $uFilterKey => $uFilter)
+                @if (!in_array($uFilterKey, ['stDate1', 'stDate2', 'finDate1', 'finDate2']))
+                    <li>
+                        <a>{{$uFilter}}</a>
+                    </li>
+                @endif
             @endforeach
             @if(count($usedFilters))
                 <li>
@@ -56,8 +62,7 @@
                             <input name='searchString' class="input-field" type="search" placeholder="Ключевое слово"
                             @if(in_array('searchString', array_keys($usedFilters)))
                                 value="{{$usedFilters['searchString']}}"
-                            @endif
-                            >
+                            @endif>
                             <button class="widgets-searchbox-btn" type="submit">
                                 <i class="pe-7s-search"></i>
                             </button>
@@ -98,22 +103,22 @@
                                 <label style="color: #0b0b0b">Размещение:</label>
                                 <div style="display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 10px;">
                                     <span>От:</span>
-                                    <input type="date" id="stDate1" name="stDate1" class="form-control">
+                                    <input type="date" id="stDate1" name="stDate1" class="form-control" @if(in_array('stDate1', array_keys($usedFilters))) value="{{$usedFilters['stDate1']}}" @endif>
                                 </div>
                                 <div style="display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 10px;">
                                     <span>До:</span>
-                                    <input type="date" id="stDate2" name="stDate2" class="form-control">
+                                    <input type="date" id="stDate2" name="stDate2" class="form-control" @if(in_array('stDate2', array_keys($usedFilters))) value="{{$usedFilters['stDate2']}}" @endif>
                                 </div>
                                 <br>
 
                                 <label style="color: #0b0b0b">Окончание:</label>
                                 <div style="display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 10px;">
                                     <span>От:</span>
-                                    <input type="date" id="finDate1" name="finDate1" class="form-control">
+                                    <input type="date" id="finDate1" name="finDate1" class="form-control" @if(in_array('finDate1', array_keys($usedFilters))) value="{{$usedFilters['finDate1']}}" @endif>
                                 </div>
                                 <div style="display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 10px;">
                                     <span>До:</span>
-                                    <input type="date" id="finDate2" name="finDate2" class="form-control">
+                                    <input type="date" id="finDate2" name="finDate2" class="form-control" @if(in_array('finDate2', array_keys($usedFilters))) value="{{$usedFilters['finDate2']}}" @endif>
                                 </div>
 {{--                                <div class="widgets-item">--}}
 {{--                                    <label>Размещение:</label>--}}
@@ -295,6 +300,7 @@
                                                             <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: darkred">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
                                                         @endif
                                                     @endif
+                                                    <p class="short-desc mb-0" style="font-size: 14px; margin-top: 10px; color: black">Актуально на {{$oneTender['updating_at']}}</p>
                                                     <br><br>
                                                 </ul>
                                                 @if($title === 'Избранное')
@@ -363,6 +369,7 @@
                                                                 <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: darkred">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
                                                             @endif
                                                         @endif
+                                                        <p class="short-desc mb-0" style="font-size: 14px; margin-top: 10px; color: black">Актуально на {{$oneTender['updating_at']}}</p>
                                                         <br><br>
                                                     </ul>
                                                     @if($title === 'Избранное')

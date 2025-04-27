@@ -10,6 +10,7 @@ use App\Models\PriorityModel;
 use App\Models\Tender;
 use App\Models\WorkStageModel;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class TenderService
 {
@@ -71,18 +72,22 @@ class TenderService
             // ДАТЫ
             if (!empty($searchBox['stDate1'])) {
                 $tenderInfo = $tenderInfo->where('start_date', '>', $searchBox['stDate1']);
+                $usedFiltersPart['stDate1'] = $searchBox['stDate1'];
             }
 
             if (!empty($searchBox['stDate2'])) {
                 $tenderInfo = $tenderInfo->where('start_date', '<', $searchBox['stDate2']);
+                $usedFiltersPart['stDate2'] = $searchBox['stDate2'];
             }
 
             if (!empty($searchBox['finDate1'])) {
                 $tenderInfo = $tenderInfo->where('end_date', '>', $searchBox['finDate1']);
+                $usedFiltersPart['finDate1'] = $searchBox['finDate1'];
             }
 
             if (!empty($searchBox['finDate2'])) {
                 $tenderInfo = $tenderInfo->where('end_date', '<', $searchBox['finDate2']);
+                $usedFiltersPart['finDate2'] = $searchBox['finDate2'];
             }
 
             // ЗАКОН
@@ -168,11 +173,15 @@ class TenderService
             ->sortBy('fid')
             ->toArray();
 
-//        dd($tenderInfo);
-//        dd($usedFilters);
+        $updateTime = DB::table('tenders')
+            ->distinct()
+            ->select(DB::raw("TO_CHAR(updated_at, 'DD.MM.YYYY HH24:MI') as all_update"))
+            ->pluck('all_update');
+
         return view('search.catalog',
             compact(
-                'tenderInfo', 'categories', 'allTendersNum', 'filters', 'links', 'title', 'usedFilters'
+                'tenderInfo', 'categories', 'allTendersNum',
+                'filters', 'links', 'title', 'usedFilters', 'updateTime'
             ));
     }
 

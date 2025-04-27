@@ -7,6 +7,7 @@ use App\Http\Controllers\FavouriteTenderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\TenderController;
+use App\Http\Controllers\UpdateTenderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
 use App\Models\Category;
@@ -58,5 +59,7 @@ Route::get('/logout', function () {
     Auth::logout();
     return redirect()->route('mainpage');
 })->name('logout');
+
+Route::post('/testUpdate', [UpdateTenderController::class, 'updateTender'])->name('testUpdate');
 
 require __DIR__.'/auth.php';

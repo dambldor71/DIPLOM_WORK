@@ -36,7 +36,7 @@
             <div class="row">
                 <div class="col-lg-6 pt-9 pt-lg-0">
                     <div class="single-product-content">
-                        <h2 class="title mb-3">ТЕНДЕР {{$oneTenderInfo['tender_code']}}</h2>
+                        <h2 class="title mb-3" id="tender-code">{{$oneTenderInfo['tender_code']}}</h2>
                         <div class="price-box pb-3">
                             <span class="new-price text-danger">{{$oneTenderInfo['price']}} ₽</span>
                         </div>
@@ -78,12 +78,17 @@
                 <ul class="dropdown d-none d-lg-block position-absolute end-60">
 {{--                    @dd($oneTenderInfo)--}}
 {{--                    @dd($favTenders, $oneTenderInfo['id'])--}}
+                    <p class="short-desc mb-0" style="font-size: 18px; margin-top: 10px; color: black">Актуально на {{$oneTenderInfo['updating_at']}}</p>
+                    <button style="font-size: 18px; color: black" class="btn btn-link ht-btn p-0" type="button" id="updateTenderButton">
+                        Обновить <img src="{{ asset('myPublic/assets/images/favAdd/updateButton.png')}}" alt="q" title="">
+                    </button>
+                    <br>
                     @if(in_array($oneTenderInfo['id'], $favTenders))
-                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="font-size: 24px; color: white; background: {{$oneTenderInfo['color_code']}};text-align: center; margin-top: 12px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="font-size: 24px; color: white; background: {{$oneTenderInfo['color_code']}};text-align: center; margin-top: 50px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
                             {{$oneTenderInfo['name']}}
                         </button>
                     @else
-                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="font-size: 24px; color: white; background: #2F4C73;text-align: center; margin-top: 12px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="font-size: 24px; color: white; background: #2F4C73; text-align: center; margin-top: 50px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
                             Не в избранном
                         </button>
                     @endif
@@ -136,7 +141,7 @@
                                 <h4 class="title">Этап закупки</h4>
                                 <p class="short-desc mb-0">{{$tenderFilters[1]}}</p>
                                 <h4 class="title">Ссылка на тендер на zakupki.gov</h4>
-                                <a class="short-desc mb-0" href="{{$oneTenderInfo['link']}}">Кликните, чтобы перейти</a>
+                                <a class="short-desc mb-0" href="{{$oneTenderInfo['link']}}" id="tenderLinkUpdate">Кликните, чтобы перейти</a>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="description" role="tabpanel"
@@ -168,4 +173,5 @@
         var userId = {{Auth::id()}};
     </script>
     <script src="{{asset('js/updateFavouriteTender.js')}}" defer></script>
+    <script src="{{asset('js/updateTenderInfo.js')}}" defer></script>
 @endsection
