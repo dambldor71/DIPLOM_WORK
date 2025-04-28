@@ -35,6 +35,7 @@ class TenderService
 
     public function showAll($tenderInformatrion, $searchBox, $catalogType = 'all')
     {
+//        dd($searchBox);
         $tenderInfo = $tenderInformatrion;
         $usedFiltersPart = [];
         $usedFiltersIds = [];
@@ -47,7 +48,7 @@ class TenderService
 
             foreach ($searchBox as $key => $searchElement) {
                 $notNums = ['searchString', 'page', 'min-price', 'max-price', 'priority',
-                    'stage', 'stDate1', 'stDate2', 'finDate1', 'finDate2'];
+                    'stage', 'stDate1', 'stDate2', 'finDate1', 'finDate2', 'sortParameter'];
                 if (in_array($key, $notNums)) {
                     continue;
                 }
@@ -137,6 +138,14 @@ class TenderService
                             ->pluck('name')
                             ->toArray()[0];
                     }
+                }
+            }
+            if (in_array('sortParameter', array_keys($searchBox))) {
+                if ($searchBox['sortParameter'] !== 'no sort') {
+                    $sortName = explode(' ', $searchBox['sortParameter'])[0];
+                    $sortType = explode(' ', $searchBox['sortParameter'])[1];
+                    $tenderInfo = $tenderInfo->orderBy($sortName, $sortType);
+                    $usedFiltersPart['sortParameter'] = $searchBox['sortParameter'];
                 }
             }
         }

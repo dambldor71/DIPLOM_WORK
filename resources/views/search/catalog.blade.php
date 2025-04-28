@@ -40,7 +40,7 @@
     <div>
         <ul class="widgets-tags" style="margin-left: 345px; margin-top: 25px; color: #2F4C73">
             @foreach($usedFilters as $uFilterKey => $uFilter)
-                @if (!in_array($uFilterKey, ['stDate1', 'stDate2', 'finDate1', 'finDate2']))
+                @if (!in_array($uFilterKey, ['stDate1', 'stDate2', 'finDate1', 'finDate2', 'sortParameter']))
                     <li>
                         <a>{{$uFilter}}</a>
                     </li>
@@ -57,7 +57,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-xl-3 col-lg-4 order-lg-1 order-2 pt-10 pt-lg-0">
-                    <form action="{{$title === 'Избранное' ? route('favourite') : route('search')}}" method="GET">
+                    <form action="{{$title === 'Избранное' ? route('favourite') : route('search')}}" id='using-filters' method="GET">
                         <div class="widgets-searchbox widgets-area py-6 mb-9">
                             <input name='searchString' class="input-field" type="search" placeholder="Ключевое слово"
                             @if(in_array('searchString', array_keys($usedFilters)))
@@ -163,15 +163,25 @@
                 <div class="col-xl-9 col-lg-8 order-lg-2 order-1">
                     <div class="product-topbar">
                         <ul>
-                            <li class="short">
-                                <select class="nice-select rounded-0">
-                                    <option value="1">Сортировка по умолчанию</option>
-                                    <option value="2">По возрастанию цены</option>
-                                    <option value="3">По убыванию цены</option>
-                                    <option value="4">По дате окончания</option>
-                                    <option value="5">По номеру тендера</option>
-                                </select>
-                            </li>
+                            <form action="{{$title === 'Избранное' ? route('favourite') : route('search')}}" id='form-sort' method="GET">
+                                @if(empty($usedFilters) || !in_array('sortParameter', array_keys($usedFilters)))
+                                    <select name='select-sort' id='select-sort' style="border: 1px solid #dee2e6; border-radius: 100px; padding-top: 10px; padding-bottom: 10px; padding-left: 15px; padding-right: 15px;">
+                                        <option value="no sort">Сортировка по умолчанию</option>
+                                        <option value="price asc">По возрастанию цены</option>
+                                        <option value="price desc">По убыванию цены</option>
+                                        <option value="end_date desc">По дате окончания ↓</option>
+                                        <option value="tender_code asc">По номеру тендера</option>
+                                    </select>
+                                @else
+                                    <select name='select-sort' id='select-sort' style="border: 1px solid #dee2e6; border-radius: 100px; padding-top: 10px; padding-bottom: 10px; padding-left: 15px; padding-right: 15px;">
+                                        <option value="no sort" {{$usedFilters['sortParameter'] == "no sort" ? 'selected' : ''}}>Сортировка по умолчанию</option>
+                                        <option value="price asc" {{$usedFilters['sortParameter'] == "price asc" ? 'selected' : ''}}>По возрастанию цены</option>
+                                        <option value="price desc" {{$usedFilters['sortParameter'] == "price desc" ? 'selected' : ''}}>По убыванию цены</option>
+                                        <option value="end_date desc" {{$usedFilters['sortParameter'] == "end_date desc" ? 'selected' : ''}}>По дате окончания ↓</option>
+                                        <option value="tender_code asc" {{$usedFilters['sortParameter'] == "tender_code asc" ? 'selected' : ''}}>По номеру тендера</option>
+                                    </select>
+                                @endif
+                            </form>
                             @if($title === 'Избранное')
                                 <li class="product-view-wrap">
                                     <ul class="nav" role="tablist">
@@ -412,5 +422,6 @@
     <script src="{{asset('js/updateFavouriteTender.js')}}" defer></script>
     <script src="{{asset('js/deleteFavouriteTender.js')}}" defer></script>
     <script src="{{asset('js/modalUnloadForm.js')}}" defer></script>
+    <script src="{{asset('js/sortTenders.js')}}" defer></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @endsection
