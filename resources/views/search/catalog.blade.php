@@ -6,8 +6,8 @@
     $priority = DB::table('priority')->where('user_id', Auth::id())->select('id', 'name', 'color_code')->get()->toArray();
     $stage = DB::table('work_stage')->where('user_id', Auth::id())->select('id', 'name')->get()->toArray();
     $favArray = ['Приоритет' => ['id' => 'priority', 'value' => $priority], 'Этап работ' => ['id' => 'stage', 'value' => $stage]];
-    $favTenders = DB::table('favourite_tenders')->where('user_id', Auth::id())->pluck('tender_id')->toArray();
-@endphp
+    $favTenders = DB::table('favourite_tenders as ft')->leftJoin('priority_tender as pt', 'ft.id', '=', 'pt.tender_id')->where('user_id', Auth::id())->pluck('pt.priority_id', 'ft.tender_id')->toArray();
+    @endphp
 @extends('header')
 
 @section('content')
@@ -169,6 +169,7 @@
                                         <option value="no sort">Сортировка по умолчанию</option>
                                         <option value="price asc">По возрастанию цены</option>
                                         <option value="price desc">По убыванию цены</option>
+                                        <option value="end_date asc">По дате окончания ↑</option>
                                         <option value="end_date desc">По дате окончания ↓</option>
                                         <option value="tender_code asc">По номеру тендера</option>
                                     </select>
@@ -177,6 +178,7 @@
                                         <option value="no sort" {{$usedFilters['sortParameter'] == "no sort" ? 'selected' : ''}}>Сортировка по умолчанию</option>
                                         <option value="price asc" {{$usedFilters['sortParameter'] == "price asc" ? 'selected' : ''}}>По возрастанию цены</option>
                                         <option value="price desc" {{$usedFilters['sortParameter'] == "price desc" ? 'selected' : ''}}>По убыванию цены</option>
+                                        <option value="end_date asc" {{$usedFilters['sortParameter'] == "end_date asc" ? 'selected' : ''}}>По дате окончания ↑</option>
                                         <option value="end_date desc" {{$usedFilters['sortParameter'] == "end_date desc" ? 'selected' : ''}}>По дате окончания ↓</option>
                                         <option value="tender_code asc" {{$usedFilters['sortParameter'] == "tender_code asc" ? 'selected' : ''}}>По номеру тендера</option>
                                     </select>
@@ -259,7 +261,7 @@
                                         <div class="col-12">
                                             <div class="product-list-item">
                                                 <div class="product-list-content">
-                                                    <a class="product-name pb-2" style="display: inline-block" href="{{route(in_array($oneTender['id'], $favTenders) ? 'favourite-tender' : 'tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
+                                                    <a class="product-name pb-2" style="display: inline-block" href="{{route(in_array($oneTender['id'], array_keys($favTenders)) ? 'favourite-tender' : 'tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
                                                     <p class="short-desc mb-0" style="display: inline-block; margin-left:10px; color: #2F4C73">{{$oneTender['law_name']}}</p>
                                                     <div class="price-box pb-1">
                                                         <span class="new-price" style="color: #2F4C73">{{$oneTender['price']}} ₽</span>
@@ -273,8 +275,8 @@
                                                             {{$oneTender['name']}}
                                                         </button>
                                                     @else
-                                                        <button style="font-size: 20px; color: #2F4C73; margin-top: 5px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
-                                                            <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], $favTenders) ? "addZap2" : "addZap1"}}.png" alt="q" title="">
+                                                        <button style="font-size: 20px; color: #2F4C73; margin-top: 5px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false" @if (in_array($oneTender['id'], array_keys($favTenders))) title="{{DB::table('priority')->where('id', '=', $favTenders[$oneTender['id']])->pluck('name')[0]}}" @endif>
+                                                            <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], array_keys($favTenders)) ? "addZap2" : "addZap1"}}.png" alt="q">
                                                         </button>
                                                     @endif
                                                     <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="settingButton">
@@ -330,7 +332,7 @@
                                             <div class="col-12">
                                                 <div class="product-list-item">
                                                     <div class="product-list-content">
-                                                        <a class="product-name pb-2" style="display: inline-block" href="{{route(in_array($oneTender['id'], $favTenders) ? 'favourite-tender' : 'tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
+                                                        <a class="product-name pb-2" style="display: inline-block" href="{{route(in_array($oneTender['id'], array_keys($favTenders)) ? 'favourite-tender' : 'tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
                                                         <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: #2F4C73">{{$oneTender['law_name']}}</p>
                                                         <div class="price-box pb-1">
                                                             <span class="new-price" style="color: #2F4C73">{{$oneTender['price']}} ₽</span>
@@ -345,7 +347,7 @@
                                                             </button>
                                                         @else
                                                             <button style="font-size: 20px; color: #2F4C73; margin-top: 5px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
-                                                                <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], $favTenders) ? "addZap2" : "addZap1"}}.png" alt="q"  title="{{$oneTender['priority']}}">
+                                                                <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], array_keys($favTenders)) ? "addZap2" : "addZap1"}}.png" alt="q"  title="{{$oneTender['priority']}}">
                                                             </button>
                                                         @endif
                                                         <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="settingButton">
