@@ -7,7 +7,7 @@
     $stage = DB::table('work_stage')->where('user_id', Auth::id())->select('id', 'name')->get()->toArray();
     $favArray = ['Приоритет' => ['id' => 'priority', 'value' => $priority], 'Этап работ' => ['id' => 'stage', 'value' => $stage]];
     $favTenders = DB::table('favourite_tenders as ft')->leftJoin('priority_tender as pt', 'ft.id', '=', 'pt.tender_id')->where('user_id', Auth::id())->pluck('pt.priority_id', 'ft.tender_id')->toArray();
-    @endphp
+@endphp
 @extends('header')
 
 @section('content')
@@ -31,7 +31,7 @@
     <div class="col-lg-12">
         <div>
             <h3 style="display: inline-block; margin-left: 350px; margin-top: 50px; color: #1f2226">{{$allTendersNum}}</h3>
-{{--            @dd($updateTime)--}}
+            {{--            @dd($updateTime)--}}
             <p class="short-desc mb-0" style="margin-left: 160px; display: inline-block; color: #2F4C73">
                 Данные обновлены {{ str_replace('-', '.', $updateTime[0]) }}
             </p>
@@ -197,6 +197,11 @@
                                                 На рассмотрении
                                             </a>
                                         </li>
+                                        <li class="archive-view" role="presentation">
+                                            <a id="list-view-tab" data-bs-toggle="tab" href="#archive-view" role="tab" aria-selected="true">
+                                                Архив
+                                            </a>
+                                        </li>
                                     </ul>
                                 </li>
                                 <li>
@@ -275,9 +280,15 @@
                                                             {{$oneTender['name']}}
                                                         </button>
                                                     @else
-                                                        <button style="font-size: 20px; color: #2F4C73; margin-top: 5px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false" @if (in_array($oneTender['id'], array_keys($favTenders))) title="{{DB::table('priority')->where('id', '=', $favTenders[$oneTender['id']])->pluck('name')[0]}}" @endif>
-                                                            <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], array_keys($favTenders)) ? "addZap2" : "addZap1"}}.png" alt="q">
-                                                        </button>
+                                                        @if (in_array($oneTender['id'], array_keys($favTenders)))
+                                                            <button style="font-size: 20px; background: {{DB::table('priority')->where('id', '=', $favTenders[$oneTender['id']])->pluck('color_code')[0]}}; color: white; margin-top: 5px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false" title="{{DB::table('priority')->where('id', '=', $favTenders[$oneTender['id']])->pluck('name')[0]}}">
+                                                                {{DB::table('priority')->where('id', '=', $favTenders[$oneTender['id']])->pluck('name')[0]}}
+                                                            </button>
+                                                        @else
+                                                            <button style="font-size: 20px; color: #2F4C73; margin-top: 5px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                                <img src="myPublic/assets/images/favAdd/addZap1.png" alt="q">
+                                                            </button>
+                                                        @endif
                                                     @endif
                                                     <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="settingButton">
                                                         @foreach($priority as $element)
@@ -399,7 +410,7 @@
                             <ul class="pagination justify-content-end">
                                 @if($links >= 1)
                                     @foreach($tenderInfo->links()->elements as $element)
-{{--                                        @dd($tenderInfo->links()->elements)--}}
+                                        {{--                                        @dd($tenderInfo->links()->elements)--}}
                                         @if($element === '...')
                                             <li class="page-item active" style="vertical-align: bottom">...</li>
                                         @else

@@ -17,6 +17,7 @@ class FavouriteTenderController extends Controller
             DB::raw("TO_CHAR(update_date, 'DD.MM.YYYY') as update_date"),
             DB::raw("TO_CHAR(end_date, 'DD.MM.YYYY') as end_date"),
             DB::raw("AGE(end_date, NOW()::date) as difference"),
+            DB::raw("TO_CHAR(tenders.updated_at, 'DD.MM.YYYY HH24:MI') as updating_at"),
             'source_link', 'ft.user_id',
             'p.id as priorityId', 'p.name', 'p.color_code', 'ws.id as stageId', 'ws.name as stageName',
             'filter_law.name as law_name', 'filter_stage.name as purchase_stage')
@@ -43,6 +44,7 @@ class FavouriteTenderController extends Controller
             DB::raw("TO_CHAR(update_date, 'DD.MM.YYYY') as update_date"),
             DB::raw("TO_CHAR(end_date, 'DD.MM.YYYY') as end_date"),
             DB::raw("AGE(end_date, NOW()::date) as difference"),
+            DB::raw("TO_CHAR(tenders.updated_at, 'DD.MM.YYYY HH24:MI') as updating_at"),
             'source_link', 'ft.user_id',
             'p.id as priorityId', 'p.name', 'p.color_code', 'ws.id as stageId', 'ws.name as stageName')
             ->rightJoin('favourite_tenders as ft' , 'ft.tender_id', '=', 'tenders.id')
