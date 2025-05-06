@@ -53,6 +53,8 @@
                                     <input type="date" placeholder="{{$userInfo[0]['birthday']}}" value="{{$userInfo[0]['birthday']}}" id="user-birthday" name="user-birthday" class="form-control"><br>
                                     <label for="user-phone">Номер телефона:</label>
                                     <input type="text" placeholder="{{$userInfo[0]['phone']}}" value="{{$userInfo[0]['phone']}}" id="user-phone" name="user-phone" class="form-control"><br>
+                                    <label for="user-organization">Организация:</label>
+                                    <input type="text" placeholder="{{$userInfo[0]['organization']}}" value="{{$userInfo[0]['organization']}}" id="user-organization" name="user-organization" class="form-control"><br>
                                     <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">{{ __('Сохранить') }}</button>
                                 </div>
                             </form>
@@ -91,6 +93,8 @@
                 <h5 class="short-desc mb-4">{{$userInfo[0]['phone']}}</h5>
                 <h4 style="color: #2F4C73" class="title">Дата рождения:</h4>
                 <h5 class="short-desc mb-4">{{$userInfo[0]['birthday']}}</h5>
+                <h4 style="color: #2F4C73" class="title">Организация:</h4>
+                <h5 class="short-desc mb-4">{{$userInfo[0]['organization']}}</h5>
                 <h4 style="color: #2F4C73" class="title">Telegram:</h4>
                 @if(TelegramModel::select('id')->where('user_id', Auth::id())->count())
                     <h5 class="short-desc mb-4"> {{'@' . TelegramModel::where('user_id', Auth::id())->pluck('telegram_id')[0]}}</h5>

@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->string('name');
             $table->string('surname');
+            $table->text('organization');
             $table->string('birthday');
             $table->text('phone');
-            $table->text('telegram');
             $table->timestamps();
         });
     }

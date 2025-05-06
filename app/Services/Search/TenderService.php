@@ -33,10 +33,10 @@ class TenderService
         ));
     }
 
-    public function showAll($tenderInformatrion, $searchBox, $catalogType = 'all')
+    public function showAll($tenderInformation, $searchBox, $catalogType = 'all')
     {
 //        dd($searchBox);
-        $tenderInfo = $tenderInformatrion;
+        $tenderInfo = $tenderInformation;
         $usedFiltersPart = [];
         $usedFiltersIds = [];
 //        dd($tenderInfo->get()->toArray());
@@ -46,9 +46,18 @@ class TenderService
             $stageArr = [];
             $typeArr = [];
 
+            if(isset($searchBox['active-tenders']) && !isset($searchBox['archive-tenders'])) {
+                $tenderInfo = $tenderInfo->whereIn('purchase_stage', [7, 10]);
+                $usedFiltersPart['active-tenders'] = 'Активные';
+            } elseif (!isset($searchBox['active-tenders']) && isset($searchBox['archive-tenders'])) {
+                $tenderInfo = $tenderInfo->whereNotIn('purchase_stage', [7, 10]);
+                $usedFiltersPart['archive-tenders'] = 'Архивные';
+            }
+
             foreach ($searchBox as $key => $searchElement) {
                 $notNums = ['searchString', 'page', 'min-price', 'max-price', 'priority',
-                    'stage', 'stDate1', 'stDate2', 'finDate1', 'finDate2', 'sortParameter'];
+                    'stage', 'stDate1', 'stDate2', 'finDate1', 'finDate2', 'sortParameter',
+                    'active-tenders', 'archive-tenders'];
                 if (in_array($key, $notNums)) {
                     continue;
                 }

@@ -27,7 +27,7 @@ profileForm.addEventListener('submit', function (event) {
     let profileSurname = formData.get('user-surname');
     let profilePhone = formData.get('user-phone');
     let profileBirthday = formData.get('user-birthday');
-    let profileTelegram = formData.get('user-telegram');
+    let profileOrganization = formData.get('user-organization');
 
     console.log(userId, profileName, profileSurname, profilePhone, profileBirthday);
 
@@ -40,7 +40,7 @@ profileForm.addEventListener('submit', function (event) {
             'surname': profileSurname,
             'phone': profilePhone,
             'birthday': profileBirthday.toString(),
-            'telegram': profileTelegram,
+            'organization': profileOrganization,
         },
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

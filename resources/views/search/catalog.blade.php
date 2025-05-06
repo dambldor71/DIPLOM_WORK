@@ -89,6 +89,21 @@
                                 @endforeach
                             @endif
 {{--                            @dd($usedFilters)--}}
+                            <div class="widgets-area mb-9">
+                                <h2 class="widgets-title mb-5">Показывать закупки</h2>
+                                <div class="widgets-item">
+                                    <ul class="widgets-checkbox">
+                                        <li>
+                                            <input name='active-tenders' value='1' class="input-checkbox" type="checkbox" id="active-tenders" @if(in_array('active-tenders', array_keys($usedFilters))) checked @endif>
+                                            <label class="label-checkbox mb-0" for="active-tenders">Активные</label>
+                                        </li>
+                                        <li>
+                                            <input name='archive-tenders' value='1' class="input-checkbox" type="checkbox" id="archive-tenders" @if(in_array('archive-tenders', array_keys($usedFilters))) checked @endif>
+                                            <label class="label-checkbox mb-0" for="archive-tenders">Архивные</label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                             <div class="widgets-area widgets-filter mb-9">
                                 <h2 class="widgets-title mb-5">Цена</h2>
                                 <div class="widgets-item">
@@ -187,19 +202,19 @@
                             @if($title === 'Избранное')
                                 <li class="product-view-wrap">
                                     <ul class="nav" role="tablist">
-                                        <li class="grid-view" role="presentation">
-                                            <a id="grid-view-tab" data-bs-toggle="tab" href="#list-view" role="tab" aria-selected="true">
-                                                Мои тендеры
-                                            </a>
-                                        </li>
-                                        <li class="list-view" role="presentation">
-                                            <a class="active" id="list-view-tab" data-bs-toggle="tab" href="#grid-view" role="tab" aria-selected="true">
+                                        <li class="look-view" role="presentation">
+                                            <a class="active" id="look-view-tab" data-bs-toggle="tab" href="#look-view" role="tab" aria-selected="true">
                                                 На рассмотрении
                                             </a>
                                         </li>
+                                        <li class="in-work-view" role="presentation">
+                                            <a id="in-work-view-tab" data-bs-toggle="tab" href="#in-work-view" role="tab" aria-selected="true">
+                                                Взяты в работу
+                                            </a>
+                                        </li>
                                         <li class="archive-view" role="presentation">
-                                            <a id="list-view-tab" data-bs-toggle="tab" href="#archive-view" role="tab" aria-selected="true">
-                                                Архив
+                                            <a id="archive-view-tab" data-bs-toggle="tab" href="#archive-view" role="tab" aria-selected="true">
+                                                Выигранные тендеры
                                             </a>
                                         </li>
                                     </ul>
@@ -258,7 +273,7 @@
                         </ul>
                     </div>
                     <div class="tab-content text-charcoal pt-8">
-                        <div class="tab-pane fade show active" id="grid-view" role="tabpanel" aria-labelledby="grid-view-tab">
+                        <div class="tab-pane fade show active" id="look-view" role="tabpanel" aria-labelledby="look-view-tab">
                             <div class="product-list-view with-sidebar row">
                                 @foreach($tenderInfo as $oneTender)
 {{--                                    @dd($oneTender)--}}
@@ -335,7 +350,7 @@
                                 @endforeach
                             </div>
                         </div>
-                        <div class="tab-pane fade show" id="list-view" role="tabpanel" aria-labelledby="list-view-tab">
+                        <div class="tab-pane fade show" id="in-work-view" role="tabpanel" aria-labelledby="in-work-view-tab">
                             <div class="product-list-view with-sidebar row">
                                     @foreach($tenderInfo as $oneTender)
 {{--                                        @dd($tenderInfo)--}}
@@ -402,6 +417,11 @@
                                             </div>
                                         @endif
                                     @endforeach
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show active" id="archive-view" role="tabpanel" aria-labelledby="archive-view-tab">
+                            <div class="product-list-view with-sidebar row">
+                                ЗДЕСЬ БУДУТ ВЫИГРАННЫЕ ТЕНДЕРЫ
                             </div>
                         </div>
                     </div>

@@ -15,7 +15,7 @@ class TenderController extends Controller
     {
 //        dd($request->query());
         $tenderInfo = Tender::select('id', 'tender_code', 'price', 'link', 'description',
-            'customer',
+            'customer', 'purchase_stage',
             DB::raw("TO_CHAR(start_date, 'DD.MM.YYYY') as start_date"),
             DB::raw("TO_CHAR(update_date, 'DD.MM.YYYY') as update_date"),
             DB::raw("TO_CHAR(end_date, 'DD.MM.YYYY') as end_date"),
