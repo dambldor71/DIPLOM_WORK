@@ -420,8 +420,7 @@
                             </div>
                         </div>
                         <div class="tab-pane fade show active" id="archive-view" role="tabpanel" aria-labelledby="archive-view-tab">
-                            <div class="product-list-view with-sidebar row">
-                                ЗДЕСЬ БУДУТ ВЫИГРАННЫЕ ТЕНДЕРЫ
+                            <div class="product-list-view with-sidebar row">ё
                             </div>
                         </div>
                     </div>

@@ -8,7 +8,7 @@
                     <div class="slide-inner bg-height" data-bg-image="myPublic/assets/images/product/large-size/zaglushka.png">
                         <div class="container">
                             <div class="slide-content text-white">
-                                <h3 class="sub-title">Быстрый поиск и управление на одном сайте</h3>
+                                <h3 class="sub-title">Быстрый поиск и управление в одном веб-приложении</h3>
                                 <h2 class="title mb-3">Pumori Tender</h2>
                                 <p class="short-desc different-width mb-10">Подбирайте закупки и участвуйте в торгах надежных заказчиков</p>
                                 <div class="button-wrap">
