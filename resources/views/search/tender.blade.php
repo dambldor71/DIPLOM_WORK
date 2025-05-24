@@ -1,5 +1,5 @@
 @php
-    use Illuminate\Support\Facades\Auth;
+    use App\Models\TenderPotentialWinnerModel;use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\DB;
 
     $priority = DB::table('priority')->where('user_id', Auth::id())->select('id', 'name', 'color_code')->get()->toArray();
@@ -30,7 +30,7 @@
             </div>
         </div>
     </div>
-    {{--    @dd($oneTenderInfo)--}}
+    {{--        @dd($oneTenderInfo)--}}
     <div class="single-product-area section-space-top-100">
         <div class="container">
             <div class="row">
@@ -76,26 +76,37 @@
                     </div>
                 </div>
                 <ul class="dropdown d-none d-lg-block position-absolute end-60">
-{{--                    @dd($oneTenderInfo)--}}
-{{--                    @dd($favTenders, $oneTenderInfo['id'])--}}
-                    <p class="short-desc mb-0" style="font-size: 18px; margin-top: 10px; color: black">Актуально на {{$oneTenderInfo['updating_at']}}</p>
-                    <button style="font-size: 18px; color: black" class="btn btn-link ht-btn p-0" type="button" id="updateTenderButton">
-                        Обновить <img src="{{ asset('myPublic/assets/images/favAdd/updateButton.png')}}" alt="q" title="">
+                    {{--                    @dd($oneTenderInfo)--}}
+                    {{--                    @dd($favTenders, $oneTenderInfo['id'])--}}
+                    <p class="short-desc mb-0" style="font-size: 18px; margin-top: 10px; color: black">Актуально
+                        на {{$oneTenderInfo['updating_at']}}</p>
+                    <button style="font-size: 18px; color: black" class="btn btn-link ht-btn p-0" type="button"
+                            id="updateTenderButton">
+                        Обновить <img src="{{ asset('myPublic/assets/images/favAdd/updateButton.png')}}" alt="q"
+                                      title="">
                     </button>
                     <br>
                     @if(in_array($oneTenderInfo['id'], $favTenders))
-                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="font-size: 24px; color: white; background: {{$oneTenderInfo['color_code']}};text-align: center; margin-top: 50px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                        <button class="btn btn-link dropdown-toggle ht-btn p-0"
+                                style="font-size: 24px; color: white; background: {{$oneTenderInfo['color_code']}};text-align: center; margin-top: 50px"
+                                type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting"
+                                aria-expanded="false">
                             {{$oneTenderInfo['name']}}
                         </button>
                     @else
-                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="font-size: 24px; color: white; background: #2F4C73; text-align: center; margin-top: 50px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                        <button class="btn btn-link dropdown-toggle ht-btn p-0"
+                                style="font-size: 24px; color: white; background: #2F4C73; text-align: center; margin-top: 50px"
+                                type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting"
+                                aria-expanded="false">
                             Не в избранном
                         </button>
                     @endif
-{{--                    @dd($priority)--}}
-                    <li class="dropdown-menu dropdown-menu-end" id="{{$oneTenderInfo['id']}}" aria-labelledby="settingButton">
+                    {{--                    @dd($priority)--}}
+                    <li class="dropdown-menu dropdown-menu-end" id="{{$oneTenderInfo['id']}}"
+                        aria-labelledby="settingButton">
                         @foreach($priority as $element)
-                            <button id='{{$element->id}}' class="btn tender-status" style="color: white; background: {{$element->color_code}};text-align: center">
+                            <button id='{{$element->id}}' class="btn tender-status"
+                                    style="color: white; background: {{$element->color_code}};text-align: center">
                                 {{$element->name}}
                             </button>
                         @endforeach
@@ -123,7 +134,8 @@
                         </li>
                     </ul>
                     <div class="tab-content product-tab-content">
-                        <div class="tab-pane fade show active" id="information" role="tabpanel" aria-labelledby="information-tab">
+                        <div class="tab-pane fade show active" id="information" role="tabpanel"
+                             aria-labelledby="information-tab">
                             <div class="product-information-body">
                                 <h4 class="title">Описание тендера</h4>
                                 <p class="short-desc mb-4">{{$oneTenderInfo['description']}}</p>
@@ -141,13 +153,58 @@
                                 <h4 class="title">Этап закупки</h4>
                                 <p class="short-desc mb-0">{{$tenderFilters[1]}}</p>
                                 <h4 class="title">Ссылка на тендер на zakupki.gov</h4>
-                                <a class="short-desc mb-0" href="{{$oneTenderInfo['link']}}" id="tenderLinkUpdate">Кликните, чтобы перейти</a>
+                                <a class="short-desc mb-0" href="{{$oneTenderInfo['link']}}" id="tenderLinkUpdate">Кликните,
+                                    чтобы перейти</a>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="description" role="tabpanel"
                              aria-labelledby="description-tab">
                             <div class="product-description-body">
-                                <p class="short-desc mb-0">@текст@</p>
+                                @if(in_array($oneTenderInfo['id'], $favTenders))
+                                    <form style="margin-bottom: 15px" id='add-id-winner-to-tender' action="" method="POST">
+                                        <div class="product-add-priority-body">
+                                            <h4 class="title">Идентификационный номер участника тендера</h4>
+                                            <input type="text" id="contest-id" name="contest-id" class="form-control"
+                                                   placeholder="В случае одобрения Вашей заявки, укажите id участника">
+                                            <br><br>
+                                            <button class="btn btn-custom-size lg-size btn-primary"
+                                                    style="border-radius: 20px"
+                                                    id="openModalBtn">{{ __('Сохранить') }}</button>
+                                        </div>
+                                    </form>
+                                @endif
+                                <form style="margin-bottom: 15px" id='add-сomment-to-tender' action="" method="POST">
+                                    <div class="product-add-priority-body">
+                                        <h4 class="title">Добавить комментарий к тендеру</h4>
+                                        <input type="text" id="comment" name="comment" class="form-control"
+                                               placeholder="Укажите комментарий к тендеру">
+                                        <br><br>
+                                        <button class="btn btn-custom-size lg-size btn-primary"
+                                                style="border-radius: 20px"
+                                                id="openModalBtn">{{ __('Сохранить') }}</button>
+                                    </div>
+                                </form>
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Дата</th>
+                                        <th>Комментарии</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach(DB::table('tender_comments')
+                                                ->where('tender_id', '=', $oneTenderInfo['id'])
+                                                ->where('user_id', '=', Auth::id())
+                                                ->select('updated_at', 'comment')
+                                                ->get()
+                                                ->toArray() as $comment)
+                                        <tr>
+                                            <td>{{$comment->updated_at}}</td>
+                                            <td>{{$comment->comment}}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -155,11 +212,14 @@
             </div>
         </div>
     </div>
-{{--    @dd($oneTenderInfo)--}}
+    {{--    @dd($oneTenderInfo)--}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script>
         var userId = {{Auth::id()}};
+        var tenderId ={{$oneTenderInfo['id']}}
     </script>
     <script src="{{asset('js/updateFavouriteTender.js')}}" defer></script>
+    <script src="{{asset('js/addContestId.js')}}" defer></script>
+    <script src="{{asset('js/addTenderComment.js')}}" defer></script>
     <script src="{{asset('js/updateTenderInfo.js')}}" defer></script>
 @endsection

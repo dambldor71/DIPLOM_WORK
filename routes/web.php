@@ -4,8 +4,10 @@ use App\Http\Controllers\AddDeleteSettingsController;
 use App\Http\Controllers\ChosenTenderController;
 use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\FavouriteTenderController;
+use App\Http\Controllers\PotentialWinnerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SupportController;
+use App\Http\Controllers\TenderCommentController;
 use App\Http\Controllers\TenderController;
 use App\Http\Controllers\UpdateTenderController;
 use App\Http\Controllers\UserController;
@@ -61,5 +63,8 @@ Route::get('/logout', function () {
 })->name('logout');
 
 Route::post('/testUpdate', [UpdateTenderController::class, 'updateTender'])->name('testUpdate');
+
+Route::post('/potential-winner', [PotentialWinnerController::class, 'addPotentialWinner'])->name('potential-winner');
+Route::post('/add-comment', [TenderCommentController::class, 'addComment'])->name('add-comment');
 
 require __DIR__.'/auth.php';

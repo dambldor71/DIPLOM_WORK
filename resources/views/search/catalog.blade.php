@@ -419,8 +419,9 @@
                                     @endforeach
                             </div>
                         </div>
+                        {{-- ДОРАБОТКА ТУТ --}}
                         <div class="tab-pane fade show active" id="archive-view" role="tabpanel" aria-labelledby="archive-view-tab">
-                            <div class="product-list-view with-sidebar row">ё
+                            <div class="product-list-view with-sidebar row">
                             </div>
                         </div>
                     </div>

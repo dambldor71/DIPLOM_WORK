@@ -1,8 +1,8 @@
 @php
-    use App\Models\PriorityModel;
-    use App\Models\WorkStageModel;
+    use App\Models\FavouriteTenderModel;use App\Models\PriorityModel;
+    use App\Models\PriorityTenderModel;use App\Models\WorkStageModel;
     use App\Models\TelegramModel;
-    use Illuminate\Support\Facades\Auth;
+    use App\Models\WorkStageTendersModel;use Illuminate\Support\Facades\Auth;
 
     $priorities = PriorityModel::query()->where('user_id', Auth::id())->select('id', 'name', 'color_code')->get()->toArray();
     $workStage = WorkStageModel::query()->where('user_id', Auth::id())->select('id', 'name')->get()->toArray();
@@ -33,11 +33,14 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4" style="text-align: right">
-                    <img src="{{ asset('myPublic/assets/images/avatars/ava-default.png')}}" alt="Аватар" class="img-fluid rounded-circle">
+                    <img src="{{ asset('myPublic/assets/images/avatars/ava-default.png')}}" alt="Аватар"
+                         class="img-fluid rounded-circle">
                 </div>
                 <div class="col-md-8">
                     <h3 class="card-title">{{$userInfo[0]['name'] . ' ' . $userInfo[0]['surname']}}</h3>
-                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">Редактировать</button>
+                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px"
+                            id="openModalBtn">Редактировать
+                    </button>
 
                     <div id="profileModal" class="modal">
                         <div class="modal-content">
@@ -46,16 +49,27 @@
                             <form id="profileForm" method="POST">
                                 <div class="tab-pane fade show active">
                                     <label for="user-name">Имя:</label>
-                                    <input type="text" placeholder="{{$userInfo[0]['name']}}" value="{{$userInfo[0]['name']}}" id="user-name" name="user-name" class="form-control"><br>
+                                    <input type="text" placeholder="{{$userInfo[0]['name']}}"
+                                           value="{{$userInfo[0]['name']}}" id="user-name" name="user-name"
+                                           class="form-control"><br>
                                     <label for="user-surname">Фамилия:</label>
-                                    <input type="text" placeholder="{{$userInfo[0]['surname']}}" value="{{$userInfo[0]['surname']}}" id="user-surname" name="user-surname" class="form-control"><br>
+                                    <input type="text" placeholder="{{$userInfo[0]['surname']}}"
+                                           value="{{$userInfo[0]['surname']}}" id="user-surname" name="user-surname"
+                                           class="form-control"><br>
                                     <label for="user-birthday">Дата рождения:</label>
-                                    <input type="date" placeholder="{{$userInfo[0]['birthday']}}" value="{{$userInfo[0]['birthday']}}" id="user-birthday" name="user-birthday" class="form-control"><br>
+                                    <input type="date" placeholder="{{$userInfo[0]['birthday']}}"
+                                           value="{{$userInfo[0]['birthday']}}" id="user-birthday" name="user-birthday"
+                                           class="form-control"><br>
                                     <label for="user-phone">Номер телефона:</label>
-                                    <input type="text" placeholder="{{$userInfo[0]['phone']}}" value="{{$userInfo[0]['phone']}}" id="user-phone" name="user-phone" class="form-control"><br>
+                                    <input type="text" placeholder="{{$userInfo[0]['phone']}}"
+                                           value="{{$userInfo[0]['phone']}}" id="user-phone" name="user-phone"
+                                           class="form-control"><br>
                                     <label for="user-organization">Организация:</label>
-                                    <input type="text" placeholder="{{$userInfo[0]['organization']}}" value="{{$userInfo[0]['organization']}}" id="user-organization" name="user-organization" class="form-control"><br>
-                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">{{ __('Сохранить') }}</button>
+                                    <input type="text" placeholder="{{$userInfo[0]['organization']}}"
+                                           value="{{$userInfo[0]['organization']}}" id="user-organization"
+                                           name="user-organization" class="form-control"><br>
+                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px"
+                                            id="openModalBtn">{{ __('Сохранить') }}</button>
                                 </div>
                             </form>
                         </div>
@@ -124,24 +138,29 @@
                                             <tbody>
                                             <tr>
                                                 <td>Всего тендеров в Избранном</td>
-                                                <td>{{\App\Models\FavouriteTenderModel::where('user_id', Auth::id())->count()}}</td>
-                                                <td><a href="{{route('favourite')}}" class="btn btn-primary btn-sm">Перейти</a></td>
+                                                <td>{{FavouriteTenderModel::where('user_id', Auth::id())->count()}}</td>
+                                                <td><a href="{{route('favourite')}}" class="btn btn-primary btn-sm">Перейти</a>
+                                                </td>
                                             </tr>
                                             @foreach($favArray as $key => $cat)
                                                 @foreach($cat['value'] as $elem)
                                                     <tr>
                                                         @if($key === 'Приоритет')
-                                                            <td>Всего тендеров с приоритетом &#39;{{$elem['name']}}&#39;</td>
-                                                            <td>{{\App\Models\PriorityTenderModel::where('priority_id', $elem['id'])->leftJoin('favourite_tenders as ft', 'ft.id', '=', 'priority_tender.tender_id')->where('user_id', Auth::id())->count()}}</td>
+                                                            <td>Всего тендеров с приоритетом &#39;{{$elem['name']}}
+                                                                &#39;
+                                                            </td>
+                                                            <td>{{PriorityTenderModel::where('priority_id', $elem['id'])->leftJoin('favourite_tenders as ft', 'ft.id', '=', 'priority_tender.tender_id')->where('user_id', Auth::id())->count()}}</td>
                                                         @else
                                                             <td>Всего тендеров на этапе &#39;{{$elem['name']}}&#39;</td>
-                                                            <td>{{\App\Models\WorkStageTendersModel::where('stage_id', $elem['id'])->leftJoin('favourite_tenders as ft', 'ft.id', '=', 'work_stage_tenders.favourite_id')->where('user_id', Auth::id())->count()}}</td>
+                                                            <td>{{WorkStageTendersModel::where('stage_id', $elem['id'])->leftJoin('favourite_tenders as ft', 'ft.id', '=', 'work_stage_tenders.favourite_id')->where('user_id', Auth::id())->count()}}</td>
                                                         @endif
                                                         <td>
                                                             @if($key === 'Приоритет')
-                                                                <a href="http://{{$_SERVER['HTTP_HOST']}}/favourite-catalog?{{$cat['id']}}={{$elem['id']}}&stage=all" class="btn btn-primary btn-sm">Перейти</a>
+                                                                <a href="http://{{$_SERVER['HTTP_HOST']}}/favourite-catalog?{{$cat['id']}}={{$elem['id']}}&stage=all"
+                                                                   class="btn btn-primary btn-sm">Перейти</a>
                                                             @else
-                                                                <a href="http://{{$_SERVER['HTTP_HOST']}}/favourite-catalog?priority=all&{{$cat['id']}}={{$elem['id']}}" class="btn btn-primary btn-sm">Перейти</a>
+                                                                <a href="http://{{$_SERVER['HTTP_HOST']}}/favourite-catalog?priority=all&{{$cat['id']}}={{$elem['id']}}"
+                                                                   class="btn btn-primary btn-sm">Перейти</a>
                                                             @endif
                                                         </td>
                                                     </tr>
@@ -195,7 +214,8 @@
                                     <input type="text" id="code" name="code" class="form-control">
                                     <label for="color">Цвет для отображения:</label>
                                     <input type="color" id="color" name="color" class="form-control">
-                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">{{ __('Сохранить') }}</button>
+                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px"
+                                            id="openModalBtn">{{ __('Сохранить') }}</button>
                                 </form>
                             </div>
                         </div>
@@ -209,7 +229,8 @@
                                             <option value="{{$elem['id']}}">{{$elem['name']}}</option>
                                         @endforeach
                                     </select>
-                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">{{ __('Удалить') }}</button>
+                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px"
+                                            id="openModalBtn">{{ __('Удалить') }}</button>
                                 </form>
                             </div>
                         </div>
@@ -242,7 +263,8 @@
                                     <input type="text" id="name" name="name" class="form-control">
                                     <label for="code">Код этапа работы:</label>
                                     <input type="text" id="code" name="code" class="form-control">
-                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">{{ __('Сохранить') }}</button>
+                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px"
+                                            id="openModalBtn">{{ __('Сохранить') }}</button>
                                 </form>
                             </div>
                         </div>
@@ -256,7 +278,8 @@
                                             <option value="{{$elem['id']}}">{{$elem['name']}}</option>
                                         @endforeach
                                     </select>
-                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px" id="openModalBtn">{{ __('Удалить') }}</button>
+                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px"
+                                            id="openModalBtn">{{ __('Удалить') }}</button>
                                 </form>
                             </div>
                         </div>
