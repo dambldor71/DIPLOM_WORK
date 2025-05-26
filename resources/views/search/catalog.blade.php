@@ -7,6 +7,7 @@
     $stage = DB::table('work_stage')->where('user_id', Auth::id())->select('id', 'name')->get()->toArray();
     $favArray = ['Приоритет' => ['id' => 'priority', 'value' => $priority], 'Этап работ' => ['id' => 'stage', 'value' => $stage]];
     $favTenders = DB::table('favourite_tenders as ft')->leftJoin('priority_tender as pt', 'ft.id', '=', 'pt.tender_id')->where('user_id', Auth::id())->pluck('pt.priority_id', 'ft.tender_id')->toArray();
+    $potentialIds = DB::table('tender_potential_winner')->where('user_id', Auth::id())->pluck('potential_winner_id')->toArray();
 @endphp
 @extends('header')
 
@@ -277,7 +278,7 @@
                             <div class="product-list-view with-sidebar row">
                                 @foreach($tenderInfo as $oneTender)
 {{--                                    @dd($oneTender)--}}
-                                    @if($oneTender['stageName'] === null)
+                                    @if($oneTender['stageName'] === null && !in_array($oneTender['winner'], $potentialIds))
                                         <div class="col-12">
                                             <div class="product-list-item">
                                                 <div class="product-list-content">
@@ -330,12 +331,12 @@
                                                     <p class="short-desc mb-0" style="margin-top: 30px; color: #2F4C73">{{$oneTender['start_date'] . ' - ' . $oneTender['end_date']}}</p>
                                                     <p class="short-desc mb-0" style="display: inline-block; margin-top: 10px; color: #2F4C73">{{$oneTender['purchase_stage']}}</p>
                                                     @if(!str_contains($oneTender['difference'], '-') && !str_contains($oneTender['difference'], '00:00:00'))
-                                                        @if ((int) explode(' ', $oneTender['difference'])[0] >= 7)
+                                                        @if ((int) explode(' ', $oneTender['difference'])[0] > 7)
                                                             <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: green">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
-                                                        @elseif((int) explode(' ', $oneTender['difference'])[0] > 3)
+                                                        @elseif((int) explode(' ', $oneTender['difference'])[0] > 4)
                                                             <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: orangered">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
                                                         @else
-                                                            <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: darkred">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
+                                                            <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: darkred">{{explode(' ', $oneTender['difference'])[0]}} дня</p>
                                                         @endif
                                                     @endif
                                                     <p class="short-desc mb-0" style="font-size: 14px; margin-top: 10px; color: black">Актуально на {{$oneTender['updating_at']}}</p>
@@ -354,7 +355,7 @@
                             <div class="product-list-view with-sidebar row">
                                     @foreach($tenderInfo as $oneTender)
 {{--                                        @dd($tenderInfo)--}}
-                                        @if($oneTender['stageName'] !== null)
+                                        @if($oneTender['stageName'] !== null && !in_array($oneTender['winner'], $potentialIds))
                                             <div class="col-12">
                                                 <div class="product-list-item">
                                                     <div class="product-list-content">
@@ -399,12 +400,12 @@
                                                         <p class="short-desc mb-0" style="margin-top: 30px; color: #2F4C73">{{$oneTender['start_date'] . ' - ' . $oneTender['end_date']}}</p>
                                                         <p class="short-desc mb-0" style="display: inline-block; margin-top: 10px; color: #2F4C73">{{$oneTender['purchase_stage']}}</p>
                                                         @if(!str_contains($oneTender['difference'], '-') && !str_contains($oneTender['difference'], '00:00:00'))
-                                                            @if ((int) explode(' ', $oneTender['difference'])[0] >= 7)
+                                                            @if ((int) explode(' ', $oneTender['difference'])[0] > 7)
                                                                 <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: green">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
-                                                            @elseif((int) explode(' ', $oneTender['difference'])[0] > 3)
+                                                            @elseif((int) explode(' ', $oneTender['difference'])[0] > 4)
                                                                 <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: orangered">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
                                                             @else
-                                                                <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: darkred">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
+                                                                <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: darkred">{{explode(' ', $oneTender['difference'])[0]}} дня</p>
                                                             @endif
                                                         @endif
                                                         <p class="short-desc mb-0" style="font-size: 14px; margin-top: 10px; color: black">Актуально на {{$oneTender['updating_at']}}</p>
@@ -420,8 +421,73 @@
                             </div>
                         </div>
                         {{-- ДОРАБОТКА ТУТ --}}
-                        <div class="tab-pane fade show active" id="archive-view" role="tabpanel" aria-labelledby="archive-view-tab">
+                        <div class="tab-pane fade show" id="archive-view" role="tabpanel" aria-labelledby="archive-view-tab">
                             <div class="product-list-view with-sidebar row">
+                                @foreach($tenderInfo as $oneTender)
+                                    {{--                                        @dd($tenderInfo)--}}
+                                    @if(in_array($oneTender['winner'], $potentialIds))
+                                        <div class="col-12">
+                                            <div class="product-list-item">
+                                                <div class="product-list-content">
+                                                    <a class="product-name pb-2" style="display: inline-block" href="{{route(in_array($oneTender['id'], array_keys($favTenders)) ? 'favourite-tender' : 'tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
+                                                    <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: #2F4C73">{{$oneTender['law_name']}}</p>
+                                                    <div class="price-box pb-1">
+                                                        <span class="new-price" style="color: #2F4C73">{{$oneTender['price']}} ₽</span>
+                                                    </div>
+                                                    <div>{{$oneTender['description']}}</div>
+                                                    <p class="short-desc mb-0" style="color: #2F4C73">{{$oneTender['customer']}}</p>
+                                                </div>
+                                                <ul class="dropdown d-none d-lg-block" style="margin-left:75px">
+                                                    @if($title === 'Избранное')
+                                                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: {{$oneTender['color_code']}};text-align: center; margin-top: 5px" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                            {{$oneTender['name']}}
+                                                        </button>
+                                                    @else
+                                                        <button style="font-size: 20px; color: #2F4C73; margin-top: 5px" class="btn btn-link dropdown-toggle ht-btn p-0" type="button" id="settingButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                            <img src="myPublic/assets/images/favAdd/{{in_array($oneTender['id'], array_keys($favTenders)) ? "addZap2" : "addZap1"}}.png" alt="q"  title="{{$oneTender['priority']}}">
+                                                        </button>
+                                                    @endif
+                                                    <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="settingButton">
+                                                        @foreach($priority as $element)
+                                                            <button id='{{$element->id}}' class="btn tender-status" style="color: white; background: {{$element->color_code}};text-align: center">
+                                                                {{$element->name}}
+                                                            </button>
+                                                        @endforeach
+                                                    </li>
+                                                    <br>
+                                                    @if($title === 'Избранное')
+                                                        <button class="btn btn-link dropdown-toggle ht-btn p-0"  style="color: white; background: #2F4C73;text-align: center; margin-top: 5px" type="button" id="stageButton" data-bs-toggle="dropdown" aria-label="setting" aria-expanded="false">
+                                                            {{$oneTender['stageName'] !== null ? $oneTender['stageName'] : 'Этап не выбран'}}
+                                                        </button>
+                                                        <li class="dropdown-menu dropdown-menu-end" id="{{$oneTender->id}}" aria-labelledby="stageButton">
+                                                            @foreach($stage as $element)
+                                                                <button id='{{$element->id}}' class="btn tender-stage">
+                                                                    {{$element->name}}
+                                                                </button>
+                                                            @endforeach
+                                                        </li>
+                                                    @endif
+                                                    <p class="short-desc mb-0" style="margin-top: 30px; color: #2F4C73">{{$oneTender['start_date'] . ' - ' . $oneTender['end_date']}}</p>
+                                                    <p class="short-desc mb-0" style="display: inline-block; margin-top: 10px; color: #2F4C73">{{$oneTender['purchase_stage']}}</p>
+                                                    @if(!str_contains($oneTender['difference'], '-') && !str_contains($oneTender['difference'], '00:00:00'))
+                                                        @if ((int) explode(' ', $oneTender['difference'])[0] > 7)
+                                                            <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: green">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
+                                                        @elseif((int) explode(' ', $oneTender['difference'])[0] > 4)
+                                                            <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: orangered">{{explode(' ', $oneTender['difference'])[0]}} дней</p>
+                                                        @else
+                                                            <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: darkred">{{explode(' ', $oneTender['difference'])[0]}} дня</p>
+                                                        @endif
+                                                    @endif
+                                                    <p class="short-desc mb-0" style="font-size: 14px; margin-top: 10px; color: black">Актуально на {{$oneTender['updating_at']}}</p>
+                                                    <br><br>
+                                                </ul>
+                                                @if($title === 'Избранное')
+                                                    <span class="close-button position-absolute end-X" id="{{$oneTender['id']}}" title="Удалить из избранного">&times;</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
                             </div>
                         </div>
                     </div>

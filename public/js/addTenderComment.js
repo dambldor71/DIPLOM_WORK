@@ -29,5 +29,7 @@ formAddComment.addEventListener('submit', function(event) {
                 console.log(response)
             }
         });
+
+        location.reload(true);
     }
 });

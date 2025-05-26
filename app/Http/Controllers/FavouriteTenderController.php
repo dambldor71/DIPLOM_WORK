@@ -20,7 +20,7 @@ class FavouriteTenderController extends Controller
             DB::raw("TO_CHAR(tenders.updated_at, 'DD.MM.YYYY HH24:MI') as updating_at"),
             'source_link', 'ft.user_id',
             'p.id as priorityId', 'p.name', 'p.color_code', 'ws.id as stageId', 'ws.name as stageName',
-            'filter_law.name as law_name', 'filter_stage.name as purchase_stage')
+            'filter_law.name as law_name', 'filter_stage.name as purchase_stage', 'winner')
             ->rightJoin('favourite_tenders as ft' , 'ft.tender_id', '=', 'tenders.id')
             ->where('ft.user_id', $request->user()->id)
             ->leftJoin('priority_tender as pt', 'pt.tender_id', '=', 'ft.id')
@@ -46,7 +46,7 @@ class FavouriteTenderController extends Controller
             DB::raw("AGE(end_date, NOW()::date) as difference"),
             DB::raw("TO_CHAR(tenders.updated_at, 'DD.MM.YYYY HH24:MI') as updating_at"),
             'source_link', 'ft.user_id',
-            'p.id as priorityId', 'p.name', 'p.color_code', 'ws.id as stageId', 'ws.name as stageName')
+            'p.id as priorityId', 'p.name', 'p.color_code', 'ws.id as stageId', 'ws.name as stageName', 'winner')
             ->rightJoin('favourite_tenders as ft' , 'ft.tender_id', '=', 'tenders.id')
             ->where('ft.user_id', $request->user()->id)
             ->leftJoin('priority_tender as pt', 'pt.tender_id', '=', 'ft.id')

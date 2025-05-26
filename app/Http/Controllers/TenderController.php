@@ -21,7 +21,7 @@ class TenderController extends Controller
             DB::raw("TO_CHAR(end_date, 'DD.MM.YYYY') as end_date"),
             DB::raw("AGE(end_date, NOW()::date) as difference"),
             DB::raw("TO_CHAR(tenders.updated_at, 'DD.MM.YYYY HH24:MI') as updating_at"),
-            'source_link', 'filter_law.name as law_name', 'filter_stage.name as purchase_stage')
+            'source_link', 'filter_law.name as law_name', 'filter_stage.name as purchase_stage', 'winner')
             ->leftJoin('filters as filter_law', 'tenders.law', '=', 'filter_law.fid')
             ->leftJoin('filters as filter_stage', 'tenders.purchase_stage', '=', 'filter_stage.fid');
 //        dd($tenderInfo->get()->toArray());
@@ -40,7 +40,7 @@ class TenderController extends Controller
             DB::raw("TO_CHAR(end_date, 'DD.MM.YYYY') as end_date"),
             DB::raw("AGE(end_date, NOW()::date) as difference"),
             DB::raw("TO_CHAR(tenders.updated_at, 'DD.MM.YYYY HH24:MI') as updating_at"),
-            'source_link', 'tenders.updated_at');
+            'source_link', 'tenders.updated_at', 'winner');
 
 //        dd($tenderInfo->get()->toArray());
         return $service->showOne($tenderInfo, $request, $id);
