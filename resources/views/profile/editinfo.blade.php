@@ -88,13 +88,19 @@
         <li class="nav-item" role="presentation">
             <a class="tab-btn" id="statistics-tab" data-bs-toggle="tab" href="#statistics"
                role="tab" aria-controls="statistics" aria-selected="true">
-                Статистика
+                Статистика по тендерам
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="tab-btn" id="settings-tab" data-bs-toggle="tab" href="#settings"
                role="tab" aria-controls="settings" aria-selected="true">
-                Настройки
+                Приоритеты и этапы работ
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="tab-btn" id="parsing-tab" data-bs-toggle="tab" href="#parsing"
+               role="tab" aria-controls="parsing" aria-selected="true">
+                Частота парсинга
             </a>
         </li>
     </ul>
@@ -275,6 +281,43 @@
                                     <label for="name">Выберите этап работы:</label>
                                     <select id="selectStage" class="nice-select wide border-bottom-0 rounded-0">
                                         @foreach($workStage as $elem)
+                                            <option value="{{$elem['id']}}">{{$elem['name']}}</option>
+                                        @endforeach
+                                    </select>
+                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px"
+                                            id="openModalBtn">{{ __('Удалить') }}</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="parsing" role="tabpanel" aria-labelledby="parsing-tab-tab">
+            <div class="parsing-settings-body">
+                <div class="login-form">
+                    <h2 class="text-lg font-medium text-gray-900">Редактирование частоты парсинга данных</h2>
+                    <div class="tab-content product-tab-content">
+                        <div class="tab-pane fade show active" id="add-priority" role="tabpanel"
+                             aria-labelledby="add-parsing-tab">
+                            <div class="product-add-priority-body">
+                                <form id='add-parsing-time' action="" method="POST">
+                                    <label for="all-time">Укажите, с какой частотой необходимо обновлять данные по избранным тендерам:</label>
+                                    <input type="number" id="all-time" min="0" max="23" placeholder="Например, 1">
+                                    <label for="favourite-time">Укажите, с какой частотой необходимо обновлять данные по всем тендерам:</label>
+                                    <input type="number" id="favourite-time" min="0" max="23" placeholder="Например, 3">
+                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px"
+                                            id="openModalBtn">{{ __('Сохранить') }}</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="delete-priority" role="tabpanel"
+                             aria-labelledby="delete-priority-tab">
+                            <div class="product-delete-priority-body">
+                                <form id='delete-priority-form' action="" method="POST">
+                                    <label for="name">Выберите приоритет:</label>
+                                    <select id='selectPriority' class="nice-select wide border-bottom-0 rounded-0">
+                                        @foreach($priorities as $elem)
                                             <option value="{{$elem['id']}}">{{$elem['name']}}</option>
                                         @endforeach
                                     </select>

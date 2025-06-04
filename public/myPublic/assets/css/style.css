@@ -8060,7 +8060,7 @@ fieldset:disabled .btn {
 }
 
 .end-X {
-    right: 16% !important;
+    right: 17% !important;
 }
 
 .end-60 {
@@ -20056,7 +20056,7 @@ blockquote .user-name:before {
 /*  11. Breadcrumb
 /*----------------------------------------*/
 .breadcrumb-height {
-  height: 370px;
+  height: 170px;
 }
 
 .breadcrumb-heading {

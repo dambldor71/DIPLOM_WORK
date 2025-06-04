@@ -8,6 +8,7 @@
     $favArray = ['Приоритет' => ['id' => 'priority', 'value' => $priority], 'Этап работ' => ['id' => 'stage', 'value' => $stage]];
     $favTenders = DB::table('favourite_tenders as ft')->leftJoin('priority_tender as pt', 'ft.id', '=', 'pt.tender_id')->where('user_id', Auth::id())->pluck('pt.priority_id', 'ft.tender_id')->toArray();
     $potentialIds = DB::table('tender_potential_winner')->where('user_id', Auth::id())->pluck('potential_winner_id')->toArray();
+    $badStatus = ['Определение поставщика завершено', 'Определение поставщика отменено', 'Закупка завершена', 'Закупка отменена']
 @endphp
 @extends('header')
 
@@ -277,10 +278,11 @@
                         <div class="tab-pane fade show active" id="look-view" role="tabpanel" aria-labelledby="look-view-tab">
                             <div class="product-list-view with-sidebar row">
                                 @foreach($tenderInfo as $oneTender)
-{{--                                    @dd($oneTender)--}}
                                     @if($oneTender['stageName'] === null && !in_array($oneTender['winner'], $potentialIds))
                                         <div class="col-12">
-                                            <div class="product-list-item">
+                                            <div class="product-list-item" @if(in_array($oneTender['purchase_stage'], $badStatus) && $title === 'Избранное')
+                                                style="background-color: #fff2f2; border-radius: 7px"
+                                                @endif>
                                                 <div class="product-list-content">
                                                     <a class="product-name pb-2" style="display: inline-block" href="{{route(in_array($oneTender['id'], array_keys($favTenders)) ? 'favourite-tender' : 'tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
                                                     <p class="short-desc mb-0" style="display: inline-block; margin-left:10px; color: #2F4C73">{{$oneTender['law_name']}}</p>
@@ -289,6 +291,9 @@
                                                     </div>
                                                     <div>{{$oneTender['description']}}</div>
                                                     <p class="short-desc mb-0" style="color: #2F4C73">{{$oneTender['customer']}}</p>
+                                                    @if($oneTender['winner'] !== null && strlen($oneTender['winner']) < 10)
+                                                        <div style="font-size: 17px; margin-top: 10px; font-weight: bolder">Идентификационный номер победителя: {{$oneTender['winner']}}</div>
+                                                    @endif
                                                 </div>
                                                 <ul class="dropdown d-none d-lg-block" style="margin-left:75px">
                                                     @if($title === 'Избранное')
@@ -351,13 +356,15 @@
                                 @endforeach
                             </div>
                         </div>
+{{--                        @dd($tenderInfo)--}}
                         <div class="tab-pane fade show" id="in-work-view" role="tabpanel" aria-labelledby="in-work-view-tab">
                             <div class="product-list-view with-sidebar row">
                                     @foreach($tenderInfo as $oneTender)
-{{--                                        @dd($tenderInfo)--}}
                                         @if($oneTender['stageName'] !== null && !in_array($oneTender['winner'], $potentialIds))
                                             <div class="col-12">
-                                                <div class="product-list-item">
+                                                <div class="product-list-item" @if(in_array($oneTender['purchase_stage'], $badStatus) && $title === 'Избранное')
+                                                    style="background-color: #fff2f2; border-radius: 7px"
+                                                    @endif>
                                                     <div class="product-list-content">
                                                         <a class="product-name pb-2" style="display: inline-block" href="{{route(in_array($oneTender['id'], array_keys($favTenders)) ? 'favourite-tender' : 'tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
                                                         <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: #2F4C73">{{$oneTender['law_name']}}</p>
@@ -427,7 +434,7 @@
                                     {{--                                        @dd($tenderInfo)--}}
                                     @if(in_array($oneTender['winner'], $potentialIds))
                                         <div class="col-12">
-                                            <div class="product-list-item">
+                                            <div class="product-list-item" style="background-color: #d9ffed; border-radius: 7px">
                                                 <div class="product-list-content">
                                                     <a class="product-name pb-2" style="display: inline-block" href="{{route(in_array($oneTender['id'], array_keys($favTenders)) ? 'favourite-tender' : 'tender', $oneTender['id'])}}">{{$oneTender['tender_code']}}</a>
                                                     <p class="short-desc mb-0" style="display: inline-block; margin-left:25px; color: #2F4C73">{{$oneTender['law_name']}}</p>
@@ -436,6 +443,7 @@
                                                     </div>
                                                     <div>{{$oneTender['description']}}</div>
                                                     <p class="short-desc mb-0" style="color: #2F4C73">{{$oneTender['customer']}}</p>
+                                                    <div style="font-size: 17px; margin-top: 7px; font-weight: bolder">Вы - победитель! Ваш идентификационный номер: {{$oneTender['winner']}}</div>
                                                 </div>
                                                 <ul class="dropdown d-none d-lg-block" style="margin-left:75px">
                                                     @if($title === 'Избранное')
