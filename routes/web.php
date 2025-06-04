@@ -4,6 +4,7 @@ use App\Http\Controllers\AddDeleteSettingsController;
 use App\Http\Controllers\ChosenTenderController;
 use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\FavouriteTenderController;
+use App\Http\Controllers\ParsingTimeController;
 use App\Http\Controllers\PotentialWinnerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SupportController;
@@ -66,5 +67,7 @@ Route::post('/testUpdate', [UpdateTenderController::class, 'updateTender'])->nam
 
 Route::post('/potential-winner', [PotentialWinnerController::class, 'addPotentialWinner'])->name('potential-winner');
 Route::post('/add-comment', [TenderCommentController::class, 'addComment'])->name('add-comment');
+
+Route::post('/parsing-time-add', [ParsingTimeController::class, 'addParsingTime'])->name('parsing-time-add');
 
 require __DIR__.'/auth.php';

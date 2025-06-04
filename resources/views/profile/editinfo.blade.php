@@ -300,29 +300,15 @@
                     <div class="tab-content product-tab-content">
                         <div class="tab-pane fade show active" id="add-priority" role="tabpanel"
                              aria-labelledby="add-parsing-tab">
-                            <div class="product-add-priority-body">
-                                <form id='add-parsing-time' action="" method="POST">
+                            <div class="product-add-parsing-time-body">
+                                <form id='add-parsing-time-form' action="" method="POST">
                                     <label for="all-time">Укажите, с какой частотой необходимо обновлять данные по избранным тендерам:</label>
-                                    <input type="number" id="all-time" min="0" max="23" placeholder="Например, 1">
+                                    <input type="number" id="all-time" name="all-time" min="0" max="23" style="width: 400px" placeholder="Например, 1" value="0">
                                     <label for="favourite-time">Укажите, с какой частотой необходимо обновлять данные по всем тендерам:</label>
-                                    <input type="number" id="favourite-time" min="0" max="23" placeholder="Например, 3">
+                                    <input type="number" id="favourite-time" name="favourite-time" min="0" max="23" style="width: 400px" placeholder="Например, 3" value="0">
+                                    <br>
                                     <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px"
                                             id="openModalBtn">{{ __('Сохранить') }}</button>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="delete-priority" role="tabpanel"
-                             aria-labelledby="delete-priority-tab">
-                            <div class="product-delete-priority-body">
-                                <form id='delete-priority-form' action="" method="POST">
-                                    <label for="name">Выберите приоритет:</label>
-                                    <select id='selectPriority' class="nice-select wide border-bottom-0 rounded-0">
-                                        @foreach($priorities as $elem)
-                                            <option value="{{$elem['id']}}">{{$elem['name']}}</option>
-                                        @endforeach
-                                    </select>
-                                    <button class="btn btn-custom-size lg-size btn-primary" style="border-radius: 20px"
-                                            id="openModalBtn">{{ __('Удалить') }}</button>
                                 </form>
                             </div>
                         </div>
@@ -337,6 +323,7 @@
     <script>
         var userId = {{Auth::id()}}; // Получаем ID пользователя
     </script>
+    <script src="{{asset('js/parsingTimeAdd.js')}}" defer></script>
     <script src="{{asset('js/priorityAdd.js')}}" defer></script>
     <script src="{{asset('js/priorityDelete.js')}}" defer></script>
     <script src="{{asset('js/stageAdd.js')}}" defer></script>

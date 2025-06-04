@@ -26,7 +26,7 @@ class UserController extends Controller
         return view('profile.editinfo', compact('categories', 'filters', 'userInfo'));
     }
 
-    public function update(Request $request)
+    public function update(Request $request): void
     {
         UserInfoModel::where('user_id', $request->userId)->update(['name' => $request->name, 'surname' => $request->surname,
             'phone' => $request->phone, 'birthday' => $request->birthday, 'organization' => $request->organization]);
