@@ -41,7 +41,7 @@
         <div class="block mt-4">
             <label for="confirm_use_personal_data" class="inline-flex items-center">
                 <input id="confirm_use_personal_data" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="confirm_use_personal_data">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Согласен(-на) на обработку персональных данных') }}</span>
+                 Согласен(-на) на <a href="{{route('personaldata')}}">обработку персональных данных</a>
                 <x-input-error :messages="$errors->get('confirm_use_personal_data')" class="mt-2" />
             </label>
         </div>

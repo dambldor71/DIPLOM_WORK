@@ -121,6 +121,7 @@ class UsersExport implements FromCollection, WithCustomStartCell, WithHeadings, 
                 $sheet = $event->sheet;
 
                 $highestRowAndColumn = $sheet->getHighestRowAndColumn();
+                $sheet->getDelegate()->getDefaultColumnDimension()->setAutoSize(true);
                 $sheet->mergeCells('A1:' . $highestRowAndColumn['column'] . 2);
                 $sheet->mergeCells('A3:B3');
                 $sheet->mergeCells('C3:D3');
@@ -145,11 +146,11 @@ class UsersExport implements FromCollection, WithCustomStartCell, WithHeadings, 
                 $highestRow = $sheet->getHighestRow() - 2;
 
                 for ($header = 2; $header <= 5; $header++) {
-                    $sheet->getRowDimension($header)->setRowHeight(50);
+                    $sheet->getRowDimension($header)->setRowHeight(25);
                 }
 
                 for ($row = 6; $row <= $highestRow; $row++) {
-                    $sheet->getRowDimension($row)->setRowHeight(200);
+                    $sheet->getRowDimension($row)->setRowHeight(100);
                 }
             },
         ];

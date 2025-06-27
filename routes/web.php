@@ -24,6 +24,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/account-settings', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/personal-data', function () {
+    return view('main.personaldatapage');
+})->name('personaldata');
+
 Route::get('/', [WelcomeController::class, 'indexWelcome']
 )->name('welcome');
 

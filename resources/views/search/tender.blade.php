@@ -70,7 +70,12 @@
                                         @elseif((int) explode(' ', $oneTenderInfo['difference'])[0] > 4)
                                             <a style="display: inline-block; margin-left:25px; color: orangered">(осталось {{explode(' ', $oneTenderInfo['difference'])[0]}} дней)</a>
                                         @else
-                                            <a style="display: inline-block; margin-left:25px; color: darkred">(осталось {{explode(' ', $oneTenderInfo['difference'])[0]}} дня)</a>
+                                            <a style="display: inline-block; margin-left:25px; color: darkred">
+                                                @if (explode(' ', $oneTenderInfo['difference'])[0] > 1)
+                                                    (осталось {{explode(' ', $oneTenderInfo['difference'])[0]}} дня)
+                                                @else
+                                                    (остался {{explode(' ', $oneTenderInfo['difference'])[0]}} день)
+                                                @endif</a>
                                         @endif
                                     @endif
                                 </li>
